@@ -15,6 +15,7 @@ class UserPreferences(context: Context) {
 
 
        var doNotAskAgain by preferences?.booleanPreference(key_do_not_ask_again,false)!!
+       var quality by preferences?.booleanPreference(key_do_quality,false)!!
 
 }
 
@@ -23,4 +24,5 @@ class UserPreferences(context: Context) {
 const val MY_PREFS_NAME="pref_pdf_reader"
 
 const val key_do_not_ask_again = "key_do_not_ask_again"
+const val key_do_quality ="key_do_quality"
 

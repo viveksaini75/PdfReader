@@ -41,4 +41,9 @@ object Date {
         calendar[Calendar.MILLISECOND] = 0
         return calendar
     }
+
+    fun getDate(date: Date?): String? {
+        val formatter = SimpleDateFormat("dd-mm-yyyy HH:mm")
+        return formatter.format(date)
+    }
 }

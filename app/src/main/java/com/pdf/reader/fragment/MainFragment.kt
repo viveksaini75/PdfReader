@@ -53,7 +53,6 @@ class MainFragment : Fragment() , SwipeRefreshLayout.OnRefreshListener {
                 binding.recyclerView?.visibility = View.VISIBLE
                 adapter?.submitList(it)
             }
-            adapter?.submitList(it)
         }
         binding.recyclerView?.adapter = adapter
     }
@@ -76,7 +75,7 @@ class MainFragment : Fragment() , SwipeRefreshLayout.OnRefreshListener {
                 override fun onQueryTextChange(newText: String): Boolean {
                     Log.e("change", " data search$newText");
 
-                    adapter?.filter?.filter(newText)
+                   adapter?.filter?.filter(newText)
                     return true
                 }
             })

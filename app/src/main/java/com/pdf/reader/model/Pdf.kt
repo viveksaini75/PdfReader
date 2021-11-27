@@ -13,7 +13,7 @@ data class Pdf(
     val addDate: Long?,
     val modifiedDate: Long?,
     val size: Long?,
-    val time:Long? = System.currentTimeMillis(),
+    val time:Long?,
     var isBookmark: Boolean = false
 ): Serializable
 

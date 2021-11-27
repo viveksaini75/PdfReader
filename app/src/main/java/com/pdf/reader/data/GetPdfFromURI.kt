@@ -4,17 +4,15 @@ import android.content.Context
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
-import android.util.Log
 import android.webkit.MimeTypeMap
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.liveData
 import com.pdf.reader.model.Pdf
 import kotlinx.coroutines.Dispatchers
 
-class GetAllPdf(val context: Context?) {
+class GetPdfFromURI(private val context: Context?,private val uri: Uri?) {
 
-    fun getPdfList()= liveData<List<Pdf>>(Dispatchers.IO) {
-        val pdfList: ArrayList<Pdf> = ArrayList()
+    fun getPdfList(): Pdf? {
+        var pdfList: Pdf? = null
         val projection = arrayOf(
             MediaStore.Files.FileColumns._ID,
             MediaStore.Files.FileColumns.MIME_TYPE,
@@ -25,32 +23,26 @@ class GetAllPdf(val context: Context?) {
             MediaStore.Files.FileColumns.DATA,
             MediaStore.Files.FileColumns.SIZE
         )
-        val sortOrder: String = MediaStore.Files.FileColumns.DATE_ADDED + " DESC"
-        val selection: String = MediaStore.Files.FileColumns.MIME_TYPE + " = ?"
         val mimeType: String = MimeTypeMap.getSingleton().getMimeTypeFromExtension("pdf")!!
         val selectionArgs = arrayOf(mimeType)
-        val collection: Uri = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            MediaStore.Files.getContentUri(MediaStore.VOLUME_EXTERNAL)
-        } else {
-            MediaStore.Files.getContentUri("external")
-        }
-        context?.contentResolver?.query(collection, projection, selection, selectionArgs, sortOrder)
+
+        context?.contentResolver?.query(uri!!, projection, null, null, null)
             .use { cursor ->
                 if (cursor != null) {
-                    while (cursor.moveToNext()) {
-                        val columnId = cursor.getColumnIndex(MediaStore.Files.FileColumns._ID)
+                    while (cursor.moveToFirst()) {
+                        val columnId = cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns._ID)
                         val columnAddDate =
-                            cursor.getColumnIndex(MediaStore.Files.FileColumns.DATE_ADDED)
+                            cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.DATE_ADDED)
                         val columnModifiedDate =
-                            cursor.getColumnIndex(MediaStore.Files.FileColumns.DATE_MODIFIED)
+                            cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.DATE_MODIFIED)
                         val columnName =
-                            cursor.getColumnIndex(MediaStore.Files.FileColumns.DISPLAY_NAME)
-                        val columnTitle = cursor.getColumnIndex(MediaStore.Files.FileColumns.TITLE)
-                        val columnData = cursor.getColumnIndex(MediaStore.Files.FileColumns.DATA)
-                        val columnSize = cursor.getColumnIndex(MediaStore.Files.FileColumns.SIZE)
+                            cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.DISPLAY_NAME)
+                        val columnTitle = cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.TITLE)
+                        val columnData = cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.DATA)
+                        val columnSize = cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.SIZE)
 
-                        pdfList.add(
-                            Pdf(
+
+                         pdfList =   Pdf(
                                 cursor.getLong(columnId),
                                 cursor.getString(columnTitle),
                                 cursor.getString(columnData),
@@ -59,13 +51,13 @@ class GetAllPdf(val context: Context?) {
                                 cursor.getLong(columnSize),
                                 System.currentTimeMillis()
                             )
-                        )
+
 
                     }
                     cursor.close()
                 }
             }
 
-        emit(pdfList)
+        return pdfList
     }
 }

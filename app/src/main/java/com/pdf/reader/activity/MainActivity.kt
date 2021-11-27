@@ -7,11 +7,13 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Parcelable
 import android.provider.MediaStore
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.webkit.MimeTypeMap
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -23,6 +25,7 @@ import com.pdf.reader.databinding.ActivityMainBinding
 import com.pdf.reader.fragment.BookmarkFragment
 import com.pdf.reader.fragment.MainFragment
 import com.pdf.reader.fragment.RecentFragment
+import com.pdf.reader.fragment.SettingsFragment
 import com.pdf.reader.model.Pdf
 import com.pdf.reader.utils.loadFragment
 import com.pdf.reader.viewmodel.PdfViewModel
@@ -37,6 +40,7 @@ class MainActivity : BaseActivity(), NavigationBarView.OnItemSelectedListener {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setSupportActionBar(binding.tool.toolBar)
+
 
         binding.bottomBar.setOnItemSelectedListener(this)
         loadMainFragment()
@@ -67,7 +71,7 @@ class MainActivity : BaseActivity(), NavigationBarView.OnItemSelectedListener {
 
             }
             R.id.menu_settings -> {
-                //SettingsFragment().loadFragment(this, R.id.container)
+                SettingsFragment().loadFragment(this, R.id.container)
                 binding.tool.toolBar.title = getString(R.string.settings)
 
             }

@@ -81,7 +81,8 @@
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
                 android:scaleType="centerInside"
-                android:layout_marginStart="@dimen/dimen_5dp"/>
+                android:layout_marginStart="@dimen/dimen_5dp"
+                android:background="?selectableItemBackground"/>
         </RelativeLayout>
     </LinearLayout>
 

@@ -2,6 +2,10 @@ package com.pdf.reader.utils
 
 import android.content.Context
 import android.content.Intent
+import android.database.Cursor
+import android.net.Uri
+import android.os.Build
+import android.provider.MediaStore
 import android.text.TextUtils
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
@@ -24,10 +28,6 @@ fun Fragment.loadFragment(activity: AppCompatActivity, layoutId: Int) {
     ft.commitAllowingStateLoss()
 }
 
-fun getDate(date: Date?): String? {
-    val formatter = SimpleDateFormat("dd-mm-yyyy HH:mm")
-    return formatter.format(date)
-}
 
 fun String.getFile(): File? {
     try {
@@ -79,4 +79,19 @@ fun sharePdf(context: Context?, file: File?) {
         )
     } catch (e: Exception) {
     }
+}
+
+fun getPath(context: Context?, uri: Uri?): String? {
+    var filePath: String? = null
+    val projection = arrayOf(MediaStore.Files.FileColumns.DATA)
+        val cursor: Cursor? = context?.contentResolver?.query(uri!!, projection, null, null, null)
+        if (cursor != null && cursor?.moveToFirst()) {
+
+            val columnIndex: Int? = cursor?.getColumnIndexOrThrow(projection[0])
+            filePath = cursor?.getString(columnIndex!!)
+            cursor?.close()
+
+    }
+    return filePath
+
 }

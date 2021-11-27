@@ -143,7 +143,7 @@ public class PDFView extends RelativeLayout {
     private float currentYOffset = 0;
 
     /** The zoom level, always >= 1 */
-    private float zoom = 2f;
+    private float zoom = 1f;
 
     /** True if the PDFView has been recycled */
     private boolean recycled = true;

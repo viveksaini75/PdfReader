@@ -1,5 +1,6 @@
 package com.pdf.reader.activity
 
+import android.R.attr
 import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.DialogInterface
@@ -28,6 +29,7 @@ import com.github.barteksc.pdfviewer.listener.OnTapListener
 import com.github.barteksc.pdfviewer.scroll.DefaultScrollHandle
 import com.google.android.material.navigation.NavigationBarView
 import com.pdf.reader.R
+import com.pdf.reader.data.GetPdfFromURI
 import com.pdf.reader.data.PDFDocumentAdapter
 import com.pdf.reader.databinding.ActivityViewPdfBinding
 import com.pdf.reader.dialog.DetailsDialog
@@ -35,23 +37,16 @@ import com.pdf.reader.model.Pdf
 import com.pdf.reader.preference.UserPreferences
 import com.pdf.reader.utils.PDF_INTENT
 import com.pdf.reader.utils.getFile
+import com.pdf.reader.utils.getPath
 import com.pdf.reader.utils.sharePdf
 import com.pdf.reader.viewmodel.PdfViewModel
 import com.shockwave.pdfium.PdfDocument
 import java.io.File
-import java.lang.Exception
 
-class ViewPdfActivity : BaseActivity(), OnPageChangeListener, OnLoadCompleteListener,
+
+class ViewPdfURIActivity : BaseActivity(), OnPageChangeListener, OnLoadCompleteListener,
     OnPageErrorListener, OnTapListener {
 
-    companion object {
-        fun start(context: Context?, pdf: Pdf?) {
-            val intent = Intent(context, ViewPdfActivity::class.java).apply {
-                putExtra(PDF_INTENT, pdf)
-            }
-            context?.startActivity(intent)
-        }
-    }
 
     private var totalPage: Int = 0
     private var pageNumber: Int? = 0
@@ -60,10 +55,8 @@ class ViewPdfActivity : BaseActivity(), OnPageChangeListener, OnLoadCompleteList
     private val viewModel by lazy {
         ViewModelProvider(this)[PdfViewModel::class.java]
     }
-    private val pdf by lazy {
-        intent?.getSerializableExtra(PDF_INTENT) as? Pdf
-            ?: throw IllegalArgumentException("No pdf passed")
-    }
+
+    private var pdf: Pdf? = null
 
     private val userPreferences by lazy {
         UserPreferences(this)
@@ -75,25 +68,32 @@ class ViewPdfActivity : BaseActivity(), OnPageChangeListener, OnLoadCompleteList
         binding = ActivityViewPdfBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.tool.toolBar.title = pdf.title
+        val uri: Uri = intent.data as Uri
+
+        val path: Uri = Uri.fromFile(File(intent.data?.path))
+        Log.d("path",File(intent.data?.path).path)
+        Log.d("path",path.toString())
+       Log.d("asd", getPath(applicationContext,path)!!)
+
+       // binding.tool.toolBar.title = pdf?.title
         setSupportActionBar(binding.tool.toolBar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true);
 
-        loadPdf()
+    //    loadPdf()
 
-        pdf.isBookmark = viewModel.isBookmark(pdf.id)
-        val copyPdf = Pdf(
-            id = pdf.id,
-            title = pdf.title,
-            path = pdf.path,
-            addDate = pdf.addDate,
-            modifiedDate = pdf.modifiedDate,
-            size = pdf.size,
+       // pdf?.isBookmark = viewModel.isBookmark(pdf?.id)
+       /* val copyPdf = Pdf(
+            id = pdf?.id,
+            title = pdf?.title!!,
+            path = pdf?.path,
+            addDate = pdf?.addDate,
+            modifiedDate = pdf?.modifiedDate,
+            size = pdf?.size,
             time = System.currentTimeMillis(),
-            isBookmark = pdf.isBookmark
-        )
-        viewModel.insert(copyPdf)
-        changeBookmark()
+            isBookmark = pdf?.isBookmark!!
+        )*/
+       // viewModel.insert(copyPdf)
+       // changeBookmark()
 
         binding.swipeLayout.setOnClickListener {
             swipePage()
@@ -108,7 +108,7 @@ class ViewPdfActivity : BaseActivity(), OnPageChangeListener, OnLoadCompleteList
             jumpPage()
         }
         binding.bookMarkLayout.setOnClickListener {
-            pdf.isBookmark = !viewModel.isBookmark(pdf.id)
+            pdf?.isBookmark = !viewModel.isBookmark(pdf?.id)
             viewModel.insert(pdf)
             changeBookmark()
         }
@@ -117,7 +117,7 @@ class ViewPdfActivity : BaseActivity(), OnPageChangeListener, OnLoadCompleteList
 
 
     private fun changeBookmark() {
-        if (viewModel.isBookmark(pdf.id)) {
+        if (viewModel.isBookmark(pdf?.id)) {
             binding.bookmark.setColorFilter(resources.getColor(R.color.app_default_color))
         } else {
             binding.bookmark.setColorFilter(resources.getColor(R.color.black))
@@ -126,7 +126,7 @@ class ViewPdfActivity : BaseActivity(), OnPageChangeListener, OnLoadCompleteList
 
     private fun loadPdf() {
         binding.pdfView.useBestQuality(userPreferences.quality)
-        binding.pdfView.fromFile((File(pdf.path))).defaultPage(pageNumber!!)
+        binding.pdfView.fromFile((File(pdf?.path))).defaultPage(pageNumber!!)
             .onPageChange(this)
             .enableAnnotationRendering(true)
             .onLoad(this)
@@ -158,7 +158,7 @@ class ViewPdfActivity : BaseActivity(), OnPageChangeListener, OnLoadCompleteList
             binding.pdfView.useBestQuality(userPreferences.quality)
             binding.tvSwipe.text = getString(R.string.swipe_horizontal)
             binding.swipeImage.setImageResource(R.drawable.ic_swipe_left_black_24dp)
-            binding.pdfView.fromFile((File(pdf.path))).defaultPage(pageNumber!!)
+            binding.pdfView.fromFile((File(pdf?.path))).defaultPage(pageNumber!!)
                 .onPageChange(this)
                 .enableAnnotationRendering(true)
                 .onLoad(this)
@@ -265,10 +265,10 @@ class ViewPdfActivity : BaseActivity(), OnPageChangeListener, OnLoadCompleteList
                 DetailsDialog.newInstance(pdf).show(supportFragmentManager, "")
             }
             R.id.menu_print -> {
-                print(pdf.path?.getFile())
+                print(pdf?.path?.getFile())
             }
             R.id.menu_share -> {
-                sharePdf(applicationContext, pdf.path?.getFile())
+                sharePdf(applicationContext, pdf?.path?.getFile())
             }
         }
         return super.onOptionsItemSelected(item)

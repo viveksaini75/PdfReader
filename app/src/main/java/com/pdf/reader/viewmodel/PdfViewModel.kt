@@ -1,11 +1,13 @@
 package com.pdf.reader.viewmodel
 
 import android.app.Application
+import android.net.Uri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.pdf.reader.data.GetAllPdf
+import com.pdf.reader.data.GetPdfFromURI
 import com.pdf.reader.database.PdfRepository
 import com.pdf.reader.model.Pdf
 import kotlinx.coroutines.launch
@@ -54,4 +56,7 @@ class PdfViewModel(application: Application): AndroidViewModel(application) {
         return repository.isBookmark(id!!)
     }
 
+    fun getPdfFromUri(uri: Uri?): Pdf? {
+        return GetPdfFromURI(getApplication(),uri).getPdfList()
+    }
 }

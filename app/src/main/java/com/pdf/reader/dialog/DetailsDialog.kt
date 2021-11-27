@@ -13,8 +13,8 @@ import androidx.fragment.app.DialogFragment
 import com.pdf.reader.R
 import com.pdf.reader.databinding.DetailsDialogBinding
 import com.pdf.reader.databinding.FragmentMainBinding
+import com.pdf.reader.extension.Date.getDate
 import com.pdf.reader.model.Pdf
-import com.pdf.reader.utils.getDate
 import com.pdf.reader.utils.getFile
 import com.pdf.reader.utils.getFileSize
 import java.util.*

@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Filter
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.widget.PopupMenu
@@ -13,9 +14,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.pdf.reader.R
 import com.pdf.reader.activity.MainActivity
 import com.pdf.reader.activity.ViewPdfActivity
+import com.pdf.reader.databinding.PdfListItemBinding
 import com.pdf.reader.dialog.DetailsDialog
+import com.pdf.reader.extension.Date.getCurrentDate
 import com.pdf.reader.model.Pdf
-import com.pdf.reader.utils.getDate
 import com.pdf.reader.utils.getFile
 import com.pdf.reader.utils.getFileSize
 import com.pdf.reader.utils.sharePdf
@@ -32,45 +34,47 @@ class BookmarkAdapter(
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val v: View? =
-            LayoutInflater.from(parent.context).inflate(R.layout.pdf_list_item, parent, false)
-        return ViewHolder(v!!)
+       val binding = PdfListItemBinding.inflate(LayoutInflater.from(parent.context),parent,false)
+        return ViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val pdfList = getItem(position)
 
-        holder.title.text = pdfList.title
-        holder.date.text = com.pdf.reader.extension.Date.getCurrentDate(Date(pdfList?.time!!))
-        holder.size.text = pdfList.size?.getFileSize()
+        with(holder){
+            with(pdfList){
+                binding?.tvTitle?.text = title
+                binding?.tvDate?.text =
+                    getCurrentDate(Date(this?.time!!))
+                binding?.tvSize?.text = size?.getFileSize()
+                binding?.cardLayout?.setOnClickListener {
+                    ViewPdfActivity.start(context, this)
+                }
+                binding?.popup?.setOnClickListener {
+                    val popupMenu = PopupMenu(
+                        context!!, it
+                    )
+                    popupMenu.inflate(R.menu.popupmenu)
+                    popupMenu.show()
 
-        holder.card.setOnClickListener {
-           // viewModel.insert(pdfList)
-            ViewPdfActivity.start(context,pdfList)
+                    popupMenu.setOnMenuItemClickListener { item ->
+                        when (item.itemId) {
+                            R.id.menu_share -> {
+                                sharePdf(context, pdfList.path?.getFile())
+                            }
 
-        }
-
-        holder.popup?.setOnClickListener {
-            val popupMenu = PopupMenu(
-                context!!, it
-            )
-            popupMenu.inflate(R.menu.popupmenu)
-            popupMenu.show()
-
-            popupMenu.setOnMenuItemClickListener { item ->
-                when (item.itemId) {
-                    R.id.menu_share -> {
-                        sharePdf(context, pdfList.path?.getFile())
-                    }
-
-                    R.id.menu_detail -> {
-                        val activity = context as MainActivity
-                        DetailsDialog.newInstance(pdfList).show(activity.supportFragmentManager,"")
+                            R.id.menu_detail -> {
+                                val activity = context as MainActivity
+                                DetailsDialog.newInstance(pdfList).show(activity.supportFragmentManager,"")
+                            }
+                        }
+                        true
                     }
                 }
-                true
             }
         }
+
+
     }
 
     override fun getItemCount(): Int {
@@ -81,12 +85,9 @@ class BookmarkAdapter(
         super.submitList(list?.let { ArrayList(it) })
     }
 
-
-    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var popup = itemView.findViewById<View>(R.id.popup) as ImageView
-        var date = itemView.findViewById<View>(R.id.tvDate) as TextView
-        var title = itemView.findViewById<View>(R.id.tvTitle) as TextView
-        var size = itemView.findViewById<View>(R.id.tvSize) as TextView
-        var card = itemView.findViewById<View>(R.id.cardLayout) as CardView
+    class ViewHolder(private val pdfListItemBinding: PdfListItemBinding?) : RecyclerView.ViewHolder(
+        pdfListItemBinding?.root!!
+    ){
+        val binding = pdfListItemBinding
     }
 }

@@ -51,7 +51,6 @@ class BookmarkFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                 binding.recyclerView?.visibility = View.VISIBLE
                 adapter.submitList(it)
             }
-            adapter.submitList(it)
         }
         binding.recyclerView?.adapter = adapter
     }
