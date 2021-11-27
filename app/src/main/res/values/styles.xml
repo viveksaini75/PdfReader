@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="BottomNavigationText" parent="TextAppearance.MaterialComponents.Headline5">
+        <item name="android:textSize">@dimen/dimen_12dp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="DialogAlertTheme" parent="@style/Theme.MaterialComponents.Dialog.Alert">
+        <item name="android:windowBackground">@drawable/dialog_card</item>
+        <item name="android:buttonTint">@color/app_default_color</item>
+        <item name="buttonBarButtonStyle">@style/ButtonStyle.Dialog</item>
+    </style>
+
+    <style name="ButtonStyle.Dialog" parent="@style/Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="cornerRadius">8dp</item>
+        <item name="android:textColor">@color/app_default_color</item>
+    </style>
+</resources>

@@ -1,0 +1,279 @@
+package com.pdf.reader.activity
+
+import android.content.ContentValues.TAG
+import android.content.Context
+import android.content.DialogInterface
+import android.content.Intent
+import android.graphics.Color
+import android.net.Uri
+import android.os.Bundle
+import android.print.PrintAttributes
+import android.print.PrintManager
+import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
+import android.view.MotionEvent
+import android.view.View
+import android.widget.EditText
+import android.widget.ProgressBar
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.core.content.FileProvider
+import androidx.lifecycle.ViewModelProvider
+import com.github.barteksc.pdfviewer.listener.OnLoadCompleteListener
+import com.github.barteksc.pdfviewer.listener.OnPageChangeListener
+import com.github.barteksc.pdfviewer.listener.OnPageErrorListener
+import com.github.barteksc.pdfviewer.listener.OnTapListener
+import com.github.barteksc.pdfviewer.scroll.DefaultScrollHandle
+import com.google.android.material.navigation.NavigationBarView
+import com.pdf.reader.R
+import com.pdf.reader.data.PDFDocumentAdapter
+import com.pdf.reader.databinding.ActivityViewPdfBinding
+import com.pdf.reader.dialog.DetailsDialog
+import com.pdf.reader.model.Pdf
+import com.pdf.reader.utils.PDF_INTENT
+import com.pdf.reader.utils.getFile
+import com.pdf.reader.utils.sharePdf
+import com.pdf.reader.viewmodel.PdfViewModel
+import com.shockwave.pdfium.PdfDocument
+import java.io.File
+import java.lang.Exception
+
+class ViewPdfActivity : BaseActivity(), OnPageChangeListener, OnLoadCompleteListener,
+    OnPageErrorListener, OnTapListener {
+
+    companion object {
+        fun start(context: Context?, pdf: Pdf?) {
+            val intent = Intent(context, ViewPdfActivity::class.java).apply {
+                putExtra(PDF_INTENT, pdf)
+            }
+            context?.startActivity(intent)
+        }
+    }
+
+    private var totalPage: Int = 0
+    private var pageNumber: Int? = 0
+    private lateinit var binding: ActivityViewPdfBinding
+
+    private val viewModel by lazy {
+        ViewModelProvider(this)[PdfViewModel::class.java]
+    }
+    private val pdf by lazy {
+        intent?.getSerializableExtra(PDF_INTENT) as? Pdf
+            ?: throw IllegalArgumentException("No pdf passed")
+    }
+
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityViewPdfBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        binding.tool.toolBar.title = pdf.title
+        setSupportActionBar(binding.tool.toolBar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true);
+
+        loadPdf()
+
+        pdf.isBookmark = viewModel.isBookmark(pdf.id)
+        val copyPdf = Pdf(
+            id = pdf.id,
+            title = pdf.title,
+            path = pdf.path,
+            addDate = pdf.addDate,
+            modifiedDate = pdf.modifiedDate,
+            size = pdf.size,
+            time = System.currentTimeMillis(),
+            isBookmark = pdf.isBookmark
+        )
+        viewModel.insert(copyPdf)
+        changeBookmark()
+
+        binding.swipeLayout.setOnClickListener {
+            swipePage()
+        }
+
+        binding.lightModeLayout.setOnClickListener {
+            changeMode()
+        }
+        binding.pageCount.text = "${pageNumber?.plus(1)} / $totalPage"
+
+        binding.jumpPageLayout.setOnClickListener {
+            jumpPage()
+        }
+        binding.bookMarkLayout.setOnClickListener {
+            pdf.isBookmark = !viewModel.isBookmark(pdf.id)
+            viewModel.insert(pdf)
+            changeBookmark()
+        }
+    }
+
+    private fun changeBookmark() {
+        if (viewModel.isBookmark(pdf.id)) {
+            binding.bookmark.setColorFilter(resources.getColor(R.color.app_default_color))
+        } else {
+            binding.bookmark.setColorFilter(resources.getColor(R.color.black))
+        }
+    }
+
+    private fun loadPdf() {
+
+        binding.pdfView.fromFile((File(pdf.path))).defaultPage(pageNumber!!)
+            .onPageChange(this)
+            .enableAnnotationRendering(true)
+            .onLoad(this)
+            .scrollHandle(DefaultScrollHandle(this))
+            .onPageError(this)
+            .onTap(this)
+            .swipeHorizontal(false)
+            .autoSpacing(true)
+            .nightMode(binding.pdfView.isNightMode)
+            .load()
+    }
+
+    private fun changeMode() {
+        if (binding.pdfView.isNightMode) {
+            binding.tvMode.text = getString(R.string.light_mode)
+            binding.lightModeImage.setImageResource(R.drawable.ic_light_mode_black_24dp)
+            binding.pdfView.setBackgroundColor(resources.getColor(R.color.white))
+            binding.pdfView.isNightMode = false
+        } else {
+            binding.tvMode.text = getString(R.string.night_mode)
+            binding.lightModeImage.setImageResource(R.drawable.ic_mode_night_black_24dp)
+            binding.pdfView.setBackgroundColor(resources.getColor(R.color.black))
+            binding.pdfView.isNightMode = true
+        }
+    }
+
+    private fun swipePage() {
+        if (binding.pdfView.isSwipeVertical) {
+            binding.tvSwipe.text = getString(R.string.swipe_horizontal)
+            binding.swipeImage.setImageResource(R.drawable.ic_swipe_left_black_24dp)
+            binding.pdfView.fromFile((File(pdf.path))).defaultPage(pageNumber!!)
+                .onPageChange(this)
+                .enableAnnotationRendering(true)
+                .onLoad(this)
+                .scrollHandle(DefaultScrollHandle(this))
+                .onPageError(this)
+                .swipeHorizontal(true)
+                .pageFling(true)
+                .fitEachPage(true)
+                .autoSpacing(true)
+                .onTap(this)
+                .nightMode(binding.pdfView.isNightMode)
+                .load()
+        } else {
+            binding.tvSwipe.text = getString(R.string.swipe_vertical)
+            binding.swipeImage.setImageResource(R.drawable.ic_swipe_up_black_24dp)
+            loadPdf()
+        }
+    }
+
+    override fun loadComplete(nbPages: Int) {
+        val meta: PdfDocument.Meta = binding.pdfView.documentMeta
+        Log.e(TAG, "title = " + meta.title)
+        Log.e(TAG, "author = " + meta.author)
+        Log.e(TAG, "subject = " + meta.subject)
+        Log.e(TAG, "keywords = " + meta.keywords)
+        Log.e(TAG, "creator = " + meta.creator)
+        Log.e(TAG, "producer = " + meta.producer)
+        Log.e(TAG, "creationDate = " + meta.creationDate)
+        Log.e(TAG, "modDate = " + meta.modDate)
+        printBookmarksTree(binding.pdfView.tableOfContents, "-")
+    }
+
+    private fun printBookmarksTree(tree: List<PdfDocument.Bookmark>, sep: String) {
+        for (b in tree) {
+            if (b.hasChildren()) {
+                printBookmarksTree(b.children, "$sep-")
+            }
+        }
+    }
+
+    override fun onPageChanged(page: Int, pageCount: Int) {
+        pageNumber = page
+        totalPage = pageCount
+        binding.pageCount.text = "${pageNumber?.plus(1)} / $totalPage"
+    }
+
+    override fun onPageError(page: Int, t: Throwable?) {
+        Log.e("Error", "PageError", t)
+    }
+
+    override fun onTap(e: MotionEvent?): Boolean {
+        if (binding.pageCountLayout.visibility == View.VISIBLE) {
+            binding.pageCountLayout.visibility = View.GONE
+        } else {
+            binding.pageCountLayout.visibility = View.VISIBLE
+        }
+        if (binding.bottomBar.visibility == View.VISIBLE) {
+            binding.bottomBar.visibility = View.GONE
+        } else {
+            binding.bottomBar.visibility = View.VISIBLE
+        }
+        return true
+    }
+
+
+    private fun jumpPage() {
+        var editText: EditText? = null
+        val alertDialog = AlertDialog.Builder(this, R.style.DialogAlertTheme)
+        alertDialog.setNegativeButton(
+            getString(
+                R.string.cancel
+            )
+        ) { dialog: DialogInterface, _: Int ->
+            dialog.dismiss()
+        }
+        alertDialog.setPositiveButton(
+            getString(
+                R.string.go
+            )
+        ) { dialog: DialogInterface, _: Int ->
+            if ((editText?.text.toString()).isNullOrEmpty().not()) {
+                binding.pdfView.jumpTo((Integer.parseInt(editText?.text.toString()) - 1), true)
+                dialog.dismiss()
+            }
+        }
+        val inflater = layoutInflater
+        val convertView = inflater.inflate(R.layout.layout_jump_page, null)
+        editText = convertView.findViewById<EditText>(R.id.editText)
+
+        alertDialog.setView(convertView)
+        alertDialog?.show()
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                finish()
+            }
+
+            R.id.menu_search -> {
+
+            }
+            R.id.menu_detail -> {
+                DetailsDialog.newInstance(pdf).show(supportFragmentManager,"")
+            }
+            R.id.menu_print -> {
+                print(pdf.path?.getFile())
+            }
+            R.id.menu_share -> {
+                sharePdf(applicationContext, pdf.path?.getFile())
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    private fun print(file: File?) {
+        val manager = getSystemService(Context.PRINT_SERVICE) as PrintManager
+        val adapter = PDFDocumentAdapter(file)
+        val attributes = PrintAttributes.Builder().build()
+        manager.print("Document", adapter, attributes)
+    }
+}
