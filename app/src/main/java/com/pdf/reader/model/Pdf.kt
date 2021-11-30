@@ -14,6 +14,7 @@ data class Pdf(
     val modifiedDate: Long?,
     val size: Long?,
     val time:Long?,
-    var isBookmark: Boolean = false
+    var isBookmark: Boolean = false,
+    var rememberPage: Int? = 0
 ): Serializable
 

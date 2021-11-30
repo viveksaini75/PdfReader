@@ -1,5 +1,6 @@
 package com.pdf.reader.adapter
 
+import android.app.Activity
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -14,63 +15,47 @@ import com.pdf.reader.R
 import com.pdf.reader.activity.ViewPdfActivity
 import com.pdf.reader.dialog.DetailsDialog
 import com.pdf.reader.model.Pdf
-import com.pdf.reader.utils.getFile
-import com.pdf.reader.utils.getFileSize
-import com.pdf.reader.utils.sharePdf
 import com.pdf.reader.viewmodel.PdfViewModel
 
 import java.util.*
 import com.pdf.reader.activity.MainActivity
+import com.pdf.reader.bootomsheets.showBottomSheet
 import com.pdf.reader.databinding.PdfListItemBinding
 import com.pdf.reader.extension.Date.getDate
+import com.pdf.reader.interfaces.BottomSheetInterface
+import com.pdf.reader.utils.*
+import com.pdf.reader.viewholder.PdfViewHolder
 
 
 class PdfAdapter(
-    private val context: Context?,
+    private val activity: Activity?,
     private val viewModel: PdfViewModel
 ) :
-    ListAdapter<Pdf, PdfAdapter.ViewHolder>(ListAdapterCallBack), Filterable {
+    ListAdapter<Pdf, PdfViewHolder>(ListAdapterCallBack), Filterable,BottomSheetInterface {
 
+    private var pdfList: Pdf? = null
     private val resultsModel: MutableList<Pdf>? = ArrayList()
 
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PdfViewHolder {
        val binding = PdfListItemBinding.inflate(LayoutInflater.from(parent.context),parent,false)
-        return ViewHolder(binding!!)
+        return PdfViewHolder(binding!!)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val pdfList = getItem(position)
-        resultsModel?.addAll(listOf(pdfList))
+    override fun onBindViewHolder(holder: PdfViewHolder, position: Int) {
+        pdfList = getItem(position)
+        resultsModel?.addAll(listOf(getItem(position)))
 
         with(holder){
-            with(pdfList){
+            with(getItem(position)){
                 binding?.tvTitle?.text = title
                 binding?.tvDate?.text = getDate(Date(path?.getFile()?.lastModified()!!))
                 binding?.tvSize?.text = size?.getFileSize()
                 binding?.cardLayout?.setOnClickListener {
-                    ViewPdfActivity.start(context, this)
+                    ViewPdfActivity.start(activity, this)
                 }
                 binding?.popup?.setOnClickListener {
-                    val popupMenu = PopupMenu(
-                        context!!, it
-                    )
-                    popupMenu.inflate(R.menu.popupmenu)
-                    popupMenu.show()
-
-                    popupMenu.setOnMenuItemClickListener { item ->
-                        when (item.itemId) {
-                            R.id.menu_share -> {
-                                sharePdf(context, pdfList.path?.getFile())
-                            }
-
-                            R.id.menu_detail -> {
-                                val activity = context as MainActivity
-                                DetailsDialog.newInstance(pdfList).show(activity.supportFragmentManager,"")
-                            }
-                        }
-                        true
-                    }
+                    activity?.showBottomSheet(this@PdfAdapter)
                 }
             }
         }
@@ -86,11 +71,7 @@ class PdfAdapter(
         super.submitList(list?.let { ArrayList(it) })
     }
 
-    class ViewHolder(private val pdfListItemBinding: PdfListItemBinding?) : RecyclerView.ViewHolder(
-        pdfListItemBinding?.root!!
-    ){
-        val binding = pdfListItemBinding
-    }
+
 
     override fun getFilter(): Filter? {
         return object : Filter() {
@@ -119,6 +100,19 @@ class PdfAdapter(
 
             override fun publishResults(constraint: CharSequence, results: FilterResults?) {
                 submitList(results?.values as List<Pdf>?)
+            }
+        }
+    }
+
+    override fun onItemClick(string: String?) {
+        when(string){
+            BS_DETAIL_KEY->{
+                val activity = activity as MainActivity
+                DetailsDialog.newInstance(pdfList).show(activity.supportFragmentManager,"")
+            }
+
+            BS_SHARE_KEY->{
+                sharePdf(activity, pdfList?.path?.getFile())
             }
         }
     }

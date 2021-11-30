@@ -22,4 +22,5 @@
     <dimen name="dimen_60dp">60dp</dimen>
     <dimen name="dimen_55dp">55dp</dimen>
     <dimen name="dimen_15dp">15dp</dimen>
+    <dimen name="font_16">16sp</dimen>
 </resources>

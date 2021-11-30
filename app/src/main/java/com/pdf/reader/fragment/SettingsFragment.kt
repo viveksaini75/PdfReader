@@ -5,9 +5,13 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.pdf.reader.BuildConfig
 import com.pdf.reader.R
 import com.pdf.reader.databinding.FragmentSettingsBinding
 import com.pdf.reader.preference.UserPreferences
+import com.pdf.reader.utils.gotoGooglePlay
+import com.pdf.reader.utils.shareApp
+import com.pdf.reader.utils.submitFeedback
 
 
 class SettingsFragment : Fragment() {
@@ -33,6 +37,35 @@ class SettingsFragment : Fragment() {
             userPreferences?.quality = isChecked
 
         }
+        binding?.scAnimation?.isChecked = userPreferences.animation
+        binding?.scAnimation?.setOnCheckedChangeListener { buttonView, isChecked ->
+            userPreferences?.animation = isChecked
+
+        }
+        binding?.scRememberPage?.isChecked = userPreferences.rememberPage
+        binding?.scRememberPage?.setOnCheckedChangeListener { buttonView, isChecked ->
+            userPreferences?.rememberPage = isChecked
+
+        }
+
+        binding?.feedbackLayout?.setOnClickListener {
+            submitFeedback(requireContext())
+        }
+
+        binding?.shareLayout?.setOnClickListener {
+            shareApp(requireContext())
+        }
+
+        binding?.rateUsLayout?.setOnClickListener {
+            gotoGooglePlay(requireContext(),requireContext().packageName)
+
+        }
+
+        binding?.checkUpdateLayout?.setOnClickListener {
+            gotoGooglePlay(requireContext(),requireContext().packageName)
+        }
+
+        binding?.tvVersion?.text = "Version : ${BuildConfig.VERSION_NAME}"
     }
 
 }

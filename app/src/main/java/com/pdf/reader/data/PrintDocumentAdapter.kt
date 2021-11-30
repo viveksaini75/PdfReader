@@ -10,7 +10,7 @@ import android.print.PrintDocumentInfo
 import android.util.Log
 import java.io.*
 
-class PDFDocumentAdapter(private val file: File?) : PrintDocumentAdapter() {
+class PrintDocumentAdapter(private val file: File?) : PrintDocumentAdapter() {
 
     override fun onLayout(oldAttributes: PrintAttributes?, newAttributes: PrintAttributes?, cancellationSignal: CancellationSignal, callback: LayoutResultCallback, extras: Bundle?) {
         if (cancellationSignal.isCanceled) {

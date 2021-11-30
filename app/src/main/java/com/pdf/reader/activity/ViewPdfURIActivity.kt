@@ -1,14 +1,10 @@
 package com.pdf.reader.activity
 
-import android.R.attr
 import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.DialogInterface
-import android.content.Intent
-import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
-import android.os.Parcelable
 import android.print.PrintAttributes
 import android.print.PrintManager
 import android.util.Log
@@ -17,25 +13,19 @@ import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
 import android.widget.EditText
-import android.widget.ProgressBar
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.core.content.FileProvider
 import androidx.lifecycle.ViewModelProvider
 import com.github.barteksc.pdfviewer.listener.OnLoadCompleteListener
 import com.github.barteksc.pdfviewer.listener.OnPageChangeListener
 import com.github.barteksc.pdfviewer.listener.OnPageErrorListener
 import com.github.barteksc.pdfviewer.listener.OnTapListener
 import com.github.barteksc.pdfviewer.scroll.DefaultScrollHandle
-import com.google.android.material.navigation.NavigationBarView
 import com.pdf.reader.R
-import com.pdf.reader.data.GetPdfFromURI
-import com.pdf.reader.data.PDFDocumentAdapter
+import com.pdf.reader.data.PrintDocumentAdapter
 import com.pdf.reader.databinding.ActivityViewPdfBinding
 import com.pdf.reader.dialog.DetailsDialog
 import com.pdf.reader.model.Pdf
 import com.pdf.reader.preference.UserPreferences
-import com.pdf.reader.utils.PDF_INTENT
 import com.pdf.reader.utils.getFile
 import com.pdf.reader.utils.getPath
 import com.pdf.reader.utils.sharePdf
@@ -281,7 +271,7 @@ class ViewPdfURIActivity : BaseActivity(), OnPageChangeListener, OnLoadCompleteL
 
     private fun print(file: File?) {
         val manager = getSystemService(Context.PRINT_SERVICE) as PrintManager
-        val adapter = PDFDocumentAdapter(file)
+        val adapter = PrintDocumentAdapter(file)
         val attributes = PrintAttributes.Builder().build()
         manager.print("Document", adapter, attributes)
     }

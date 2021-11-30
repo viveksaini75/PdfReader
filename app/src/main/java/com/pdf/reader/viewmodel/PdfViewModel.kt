@@ -56,6 +56,10 @@ class PdfViewModel(application: Application): AndroidViewModel(application) {
         return repository.isBookmark(id!!)
     }
 
+    fun rememberPage(id: Long?): Int{
+        return repository.rememberPage(id)
+    }
+
     fun getPdfFromUri(uri: Uri?): Pdf? {
         return GetPdfFromURI(getApplication(),uri).getPdfList()
     }

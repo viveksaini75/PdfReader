@@ -43,7 +43,7 @@ object Date {
     }
 
     fun getDate(date: Date?): String? {
-        val formatter = SimpleDateFormat("dd-mm-yyyy HH:mm")
+        val formatter = SimpleDateFormat("dd-mm-yyyy HH:mm",Locale.getDefault())
         return formatter.format(date)
     }
 }

@@ -50,5 +50,9 @@ class PdfRepository(application: Application) {
 
     }
 
+    fun rememberPage(id: Long?): Int {
+        return pdfDao.rememberPage(id!!)
+    }
+
 
 }

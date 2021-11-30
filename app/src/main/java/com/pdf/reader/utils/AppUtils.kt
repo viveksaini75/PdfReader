@@ -95,3 +95,51 @@ fun getPath(context: Context?, uri: Uri?): String? {
     return filePath
 
 }
+
+fun shareApp(context: Context) {
+    try {
+        val intent = Intent(Intent.ACTION_SEND)
+        intent.type = "text/plain"
+        intent.putExtra(
+            Intent.EXTRA_TEXT,
+            "Pdf reader ,Awesome app Please check out this app:\nhttps://play.google.com/store/apps/details?id=com.cobra.screenrecorder"
+        )
+        context?.startActivity(Intent.createChooser(intent, "Share..."))
+    } catch (e: java.lang.Exception) {
+    }
+}
+
+fun submitFeedback(context: Context) {
+    try {
+        var deviceInfo = "Device Info:"
+        deviceInfo += """
+ OS Version: ${System.getProperty("os.version")}(${Build.VERSION.INCREMENTAL})"""
+        deviceInfo += """
+ OS API Level: ${Build.VERSION.SDK_INT}"""
+        deviceInfo += """
+ Device: ${Build.DEVICE}"""
+        deviceInfo += """
+ Model (and Product): ${Build.MODEL} (${Build.PRODUCT})"""
+        val emailIntent = Intent(
+            Intent.ACTION_SENDTO,
+            Uri.fromParts("mailto", "piscreenrecorder.feedback@gmail.com", null)
+        )
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Device Info")
+        emailIntent.putExtra(Intent.EXTRA_TEXT, deviceInfo)
+        context?.startActivity(Intent.createChooser(emailIntent, "Send email..."))
+    } catch (e: java.lang.Exception) {
+    }
+}
+
+fun gotoGooglePlay(context: Context, packageName: String?) {
+    try {
+        context.startActivity(
+            Intent(
+                Intent.ACTION_VIEW, Uri.parse(
+                    "https://play.google.com/store/apps/details?id=$packageName"
+                )
+            )
+        )
+    } catch (e: Exception) {
+    }
+}

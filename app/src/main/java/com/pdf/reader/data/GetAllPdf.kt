@@ -4,9 +4,7 @@ import android.content.Context
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
-import android.util.Log
 import android.webkit.MimeTypeMap
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.liveData
 import com.pdf.reader.model.Pdf
 import kotlinx.coroutines.Dispatchers

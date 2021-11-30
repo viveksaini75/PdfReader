@@ -43,7 +43,7 @@ class MainFragment : Fragment() , SwipeRefreshLayout.OnRefreshListener {
 
     private fun getData() {
 
-        adapter = PdfAdapter(requireContext(),viewModel)
+        adapter = PdfAdapter(activity,viewModel)
         viewModel.getAllPdf()?.observe(this) {
             if (it?.isEmpty()!!){
                 binding.recyclerView?.visibility = View.GONE

@@ -2,12 +2,9 @@ package com.pdf.reader.data
 
 import android.content.Context
 import android.net.Uri
-import android.os.Build
 import android.provider.MediaStore
 import android.webkit.MimeTypeMap
-import androidx.lifecycle.liveData
 import com.pdf.reader.model.Pdf
-import kotlinx.coroutines.Dispatchers
 
 class GetPdfFromURI(private val context: Context?,private val uri: Uri?) {
 
@@ -42,7 +39,7 @@ class GetPdfFromURI(private val context: Context?,private val uri: Uri?) {
                         val columnSize = cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.SIZE)
 
 
-                         pdfList =   Pdf(
+                         /*pdfList =   Pdf(
                                 cursor.getLong(columnId),
                                 cursor.getString(columnTitle),
                                 cursor.getString(columnData),
@@ -50,7 +47,7 @@ class GetPdfFromURI(private val context: Context?,private val uri: Uri?) {
                                 cursor.getLong(columnModifiedDate),
                                 cursor.getLong(columnSize),
                                 System.currentTimeMillis()
-                            )
+                            )*/
 
 
                     }

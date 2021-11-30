@@ -65,4 +65,6 @@ dependencies {
 
     api project(':pdfviewer')
 
+    implementation 'com.facebook.stetho:stetho:1.5.1'
+
 }

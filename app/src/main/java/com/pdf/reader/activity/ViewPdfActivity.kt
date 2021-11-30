@@ -2,12 +2,8 @@ package com.pdf.reader.activity
 
 import android.content.ContentValues.TAG
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
-import android.graphics.Color
-import android.net.Uri
 import android.os.Bundle
-import android.os.Parcelable
 import android.print.PrintAttributes
 import android.print.PrintManager
 import android.util.Log
@@ -15,22 +11,17 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
-import android.widget.EditText
-import android.widget.ProgressBar
-import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
-import androidx.core.content.FileProvider
 import androidx.lifecycle.ViewModelProvider
 import com.github.barteksc.pdfviewer.listener.OnLoadCompleteListener
 import com.github.barteksc.pdfviewer.listener.OnPageChangeListener
 import com.github.barteksc.pdfviewer.listener.OnPageErrorListener
 import com.github.barteksc.pdfviewer.listener.OnTapListener
 import com.github.barteksc.pdfviewer.scroll.DefaultScrollHandle
-import com.google.android.material.navigation.NavigationBarView
 import com.pdf.reader.R
-import com.pdf.reader.data.PDFDocumentAdapter
+import com.pdf.reader.data.PrintDocumentAdapter
 import com.pdf.reader.databinding.ActivityViewPdfBinding
 import com.pdf.reader.dialog.DetailsDialog
+import com.pdf.reader.dialog.JumpPageDialog
 import com.pdf.reader.model.Pdf
 import com.pdf.reader.preference.UserPreferences
 import com.pdf.reader.utils.PDF_INTENT
@@ -39,10 +30,9 @@ import com.pdf.reader.utils.sharePdf
 import com.pdf.reader.viewmodel.PdfViewModel
 import com.shockwave.pdfium.PdfDocument
 import java.io.File
-import java.lang.Exception
 
 class ViewPdfActivity : BaseActivity(), OnPageChangeListener, OnLoadCompleteListener,
-    OnPageErrorListener, OnTapListener {
+    OnPageErrorListener, OnTapListener, JumpPageDialog.OnButtonClick {
 
     companion object {
         fun start(context: Context?, pdf: Pdf?) {
@@ -79,6 +69,9 @@ class ViewPdfActivity : BaseActivity(), OnPageChangeListener, OnLoadCompleteList
         setSupportActionBar(binding.tool.toolBar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true);
 
+        if (userPreferences.rememberPage) {
+            pageNumber = viewModel.rememberPage(pdf.id)
+        }
         loadPdf()
 
         pdf.isBookmark = viewModel.isBookmark(pdf.id)
@@ -105,13 +98,14 @@ class ViewPdfActivity : BaseActivity(), OnPageChangeListener, OnLoadCompleteList
         binding.pageCount.text = "${pageNumber?.plus(1)} / $totalPage"
 
         binding.jumpPageLayout.setOnClickListener {
-            jumpPage()
+            JumpPageDialog.newInstance(totalPage).show(supportFragmentManager, "")
         }
         binding.bookMarkLayout.setOnClickListener {
             pdf.isBookmark = !viewModel.isBookmark(pdf.id)
             viewModel.insert(pdf)
             changeBookmark()
         }
+
 
     }
 
@@ -224,34 +218,6 @@ class ViewPdfActivity : BaseActivity(), OnPageChangeListener, OnLoadCompleteList
     }
 
 
-    private fun jumpPage() {
-        var editText: EditText? = null
-        val alertDialog = AlertDialog.Builder(this, R.style.DialogAlertTheme)
-        alertDialog.setNegativeButton(
-            getString(
-                R.string.cancel
-            )
-        ) { dialog: DialogInterface, _: Int ->
-            dialog.dismiss()
-        }
-        alertDialog.setPositiveButton(
-            getString(
-                R.string.go
-            )
-        ) { dialog: DialogInterface, _: Int ->
-            if ((editText?.text.toString()).isNullOrEmpty().not()) {
-                binding.pdfView.jumpTo((Integer.parseInt(editText?.text.toString()) - 1), true)
-                dialog.dismiss()
-            }
-        }
-        val inflater = layoutInflater
-        val convertView = inflater.inflate(R.layout.layout_jump_page, null)
-        editText = convertView.findViewById<EditText>(R.id.editText)
-
-        alertDialog.setView(convertView)
-        alertDialog?.show()
-    }
-
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> {
@@ -281,8 +247,29 @@ class ViewPdfActivity : BaseActivity(), OnPageChangeListener, OnLoadCompleteList
 
     private fun print(file: File?) {
         val manager = getSystemService(Context.PRINT_SERVICE) as PrintManager
-        val adapter = PDFDocumentAdapter(file)
+        val adapter = PrintDocumentAdapter(file)
         val attributes = PrintAttributes.Builder().build()
         manager.print("Document", adapter, attributes)
+    }
+
+    override fun onButtonClick(page: Int?) {
+        binding.pdfView.jumpTo((page!! - 1), userPreferences.animation)
+
+    }
+
+    override fun onStop() {
+        super.onStop()
+        val copyPdf = Pdf(
+            id = pdf.id,
+            title = pdf.title,
+            path = pdf.path,
+            addDate = pdf.addDate,
+            modifiedDate = pdf.modifiedDate,
+            size = pdf.size,
+            time = System.currentTimeMillis(),
+            isBookmark = pdf.isBookmark,
+            pageNumber
+        )
+        viewModel.insert(copyPdf)
     }
 }

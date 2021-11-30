@@ -35,7 +35,7 @@
             android:layout_gravity="center_vertical|center_horizontal"
             android:scaleType="fitCenter"
             app:srcCompat="@drawable/ic_no_file"
-            app:tint="@color/app_default_color" />
+             />
 
         <TextView
             android:layout_width="match_parent"

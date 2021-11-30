@@ -21,6 +21,7 @@ import com.pdf.reader.model.Pdf
 import com.pdf.reader.utils.getFile
 import com.pdf.reader.utils.getFileSize
 import com.pdf.reader.utils.sharePdf
+import com.pdf.reader.viewholder.BookmarkViewHolder
 import com.pdf.reader.viewmodel.PdfViewModel
 
 import java.util.*
@@ -30,15 +31,15 @@ class BookmarkAdapter(
     private val context: Context?,
     private val viewModel: PdfViewModel
 ) :
-    ListAdapter<Pdf, BookmarkAdapter.ViewHolder>(ListAdapterCallBack) {
+    ListAdapter<Pdf, BookmarkViewHolder>(ListAdapterCallBack) {
 
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BookmarkViewHolder {
        val binding = PdfListItemBinding.inflate(LayoutInflater.from(parent.context),parent,false)
-        return ViewHolder(binding)
+        return BookmarkViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: BookmarkViewHolder, position: Int) {
         val pdfList = getItem(position)
 
         with(holder){
@@ -85,9 +86,4 @@ class BookmarkAdapter(
         super.submitList(list?.let { ArrayList(it) })
     }
 
-    class ViewHolder(private val pdfListItemBinding: PdfListItemBinding?) : RecyclerView.ViewHolder(
-        pdfListItemBinding?.root!!
-    ){
-        val binding = pdfListItemBinding
-    }
 }

@@ -36,5 +36,18 @@
     <string name="general">General</string>
     <string name="quality">Quality</string>
     <string name="quality_summery">Best quality means clean pdf</string>
+    <string name="invalid_page">Invalid page</string>
+    <string name="page_animation">Page animation</string>
+    <string name="animation_summery">Jump page with animation</string>
+    <string name="other">Other</string>
+    <string name="feedback">Feedback</string>
+    <string name="feedback_summery">Report bugs and tell us what to improve</string>
+    <string name="share_summery">Share with your friends</string>
+    <string name="rate_us">Rate Us</string>
+    <string name="check_update">Check for Update</string>
+    <string name="version">Version</string>
+    <string name="more">More</string>
+    <string name="remember_page">Remember page</string>
+    <string name="remember_page_summery">Get back where you left reading</string>
 
 </resources>

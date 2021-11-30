@@ -47,4 +47,7 @@ interface PdfDao {
 
     @Query("SELECT EXISTS (SELECT * FROM pdf WHERE id=:id AND isBookmark=1)")
     fun isBookmark(id: Long): Boolean
+
+    @Query("select rememberPage from pdf WHERE id =:id")
+    fun rememberPage(id: Long): Int
 }

@@ -30,4 +30,29 @@
         <item name="android:textColor">@color/gray</item>
     </style>
 
+    <style name="SettingsTitleTextViewStyle">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="CustomBottomSheetDialogTheme" parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/CustomBottomSheetStyle</item>
+    </style>
+
+    <style name="CustomBottomSheetStyle" parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+
+    <style name="bs_linearlayout_holder_style">
+        <item name="android:background">?attr/selectableItemBackground</item>
+        <item name="android:foreground">?attr/selectableItemBackground</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/dimen_60dp</item>
+        <item name="android:paddingStart">@dimen/dimen_24dp</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:clickable">true</item>
+        <item name="android:layout_weight">1</item>
+    </style>
+
+    <dimen name="dimen_24dp">24dp</dimen>
 </resources>

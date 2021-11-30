@@ -12,6 +12,7 @@ import com.pdf.reader.extension.Date.getCurrentDate
 import com.pdf.reader.model.Pdf
 import com.pdf.reader.utils.getFile
 import com.pdf.reader.utils.getFileSize
+import com.pdf.reader.viewholder.RecentViewHolder
 import com.pdf.reader.viewmodel.PdfViewModel
 
 import java.util.*
@@ -21,14 +22,14 @@ class RecentAdapter(
     private val context: Context?,
     private val viewModel: PdfViewModel
 ) :
-    ListAdapter<Pdf, RecentAdapter.ViewHolder>(ListAdapterCallBack) {
+    ListAdapter<Pdf, RecentViewHolder>(ListAdapterCallBack) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecentViewHolder {
        val binding = RecentListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ViewHolder(binding)
+        return RecentViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: RecentViewHolder, position: Int) {
         val pdfList = getItem(position)
 
         with(holder) {
@@ -54,9 +55,5 @@ class RecentAdapter(
         super.submitList(list?.let { ArrayList(it) })
     }
 
-    class ViewHolder(private val recentListItemBinding: RecentListItemBinding?) : RecyclerView.ViewHolder(
-        recentListItemBinding?.root!!
-    ){
-        val binding = recentListItemBinding
-    }
+
 }
