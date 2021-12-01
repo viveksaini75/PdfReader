@@ -7,7 +7,6 @@ import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
 import android.text.TextUtils
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
@@ -15,9 +14,11 @@ import androidx.fragment.app.FragmentManager
 import com.pdf.reader.R
 import java.io.File
 import java.lang.Exception
-import java.text.SimpleDateFormat
-import java.util.*
 import kotlin.math.roundToInt
+import android.provider.DocumentsContract
+
+
+
 
 const val PDF_INTENT = "pdf_intent"
 
@@ -81,10 +82,20 @@ fun sharePdf(context: Context?, file: File?) {
     }
 }
 
-fun getPath(context: Context?, uri: Uri?): String? {
+fun getPath(context: Context?, path: Uri): String? {
     var filePath: String? = null
-    val projection = arrayOf(MediaStore.Files.FileColumns.DATA)
-        val cursor: Cursor? = context?.contentResolver?.query(uri!!, projection, null, null, null)
+
+    val wholeID = DocumentsContract.getDocumentId(path)
+
+    val id = wholeID.split(":").toTypedArray()[1]
+    val collection: Uri = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        MediaStore.Files.getContentUri(MediaStore.VOLUME_EXTERNAL)
+    } else {
+        MediaStore.Files.getContentUri("external")
+    }
+    val projection = arrayOf(MediaStore.Images.Media.DATA)
+        val cursor: Cursor? = context?.contentResolver?.query(collection, projection, null,
+            arrayOf(id), null)
         if (cursor != null && cursor?.moveToFirst()) {
 
             val columnIndex: Int? = cursor?.getColumnIndexOrThrow(projection[0])

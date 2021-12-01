@@ -13,9 +13,9 @@
 
 
     <item
-        android:id="@+id/menu_bookmark"
-        android:title="@string/bookmark"
-        android:icon="@drawable/ic_bookmark_black_24dp" />
+        android:id="@+id/menu_favourite"
+        android:title="@string/favourite"
+        android:icon="@drawable/ic_favourite_border_black_24dp" />
 
     <item
         android:id="@+id/menu_settings"

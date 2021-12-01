@@ -24,6 +24,8 @@ import com.pdf.reader.R
 import com.pdf.reader.data.PrintDocumentAdapter
 import com.pdf.reader.databinding.ActivityViewPdfBinding
 import com.pdf.reader.dialog.DetailsDialog
+import com.pdf.reader.extension.getFilePathFromURI
+import com.pdf.reader.extension.getRealPathFromUriAPI19
 import com.pdf.reader.model.Pdf
 import com.pdf.reader.preference.UserPreferences
 import com.pdf.reader.utils.getFile
@@ -60,16 +62,20 @@ class ViewPdfURIActivity : BaseActivity(), OnPageChangeListener, OnLoadCompleteL
 
         val uri: Uri = intent.data as Uri
 
-        val path: Uri = Uri.fromFile(File(intent.data?.path))
-        Log.d("path",File(intent.data?.path).path)
-        Log.d("path",path.toString())
-       Log.d("asd", getPath(applicationContext,path)!!)
+
+       Log.d("asd", getRealPathFromUriAPI19(applicationContext, intent.data!!)!!)
 
        // binding.tool.toolBar.title = pdf?.title
         setSupportActionBar(binding.tool.toolBar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true);
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-    //    loadPdf()
+        val  name = File(getFilePathFromURI(uri,applicationContext)!!).name
+        val  path = getFilePathFromURI(uri,applicationContext)!!
+        val  modified = File(getFilePathFromURI(uri,applicationContext)!!).lastModified()
+        val  size = File(getFilePathFromURI(uri,applicationContext)!!).length()
+
+        pdf = Pdf(null,name,path,null,modified,size,System.currentTimeMillis())
+        loadPdf()
 
        // pdf?.isBookmark = viewModel.isBookmark(pdf?.id)
        /* val copyPdf = Pdf(
@@ -97,8 +103,8 @@ class ViewPdfURIActivity : BaseActivity(), OnPageChangeListener, OnLoadCompleteL
         binding.jumpPageLayout.setOnClickListener {
             jumpPage()
         }
-        binding.bookMarkLayout.setOnClickListener {
-            pdf?.isBookmark = !viewModel.isBookmark(pdf?.id)
+        binding.favourite.setOnClickListener {
+            pdf?.isFavourite = !viewModel.isFavourite(pdf?.id)
             viewModel.insert(pdf)
             changeBookmark()
         }
@@ -107,16 +113,16 @@ class ViewPdfURIActivity : BaseActivity(), OnPageChangeListener, OnLoadCompleteL
 
 
     private fun changeBookmark() {
-        if (viewModel.isBookmark(pdf?.id)) {
-            binding.bookmark.setColorFilter(resources.getColor(R.color.app_default_color))
+        if (viewModel.isFavourite(pdf?.id)) {
+            binding.favourite.setColorFilter(resources.getColor(R.color.app_default_color))
         } else {
-            binding.bookmark.setColorFilter(resources.getColor(R.color.black))
+            binding.favourite.setColorFilter(resources.getColor(R.color.black))
         }
     }
 
     private fun loadPdf() {
         binding.pdfView.useBestQuality(userPreferences.quality)
-        binding.pdfView.fromFile((File(pdf?.path))).defaultPage(pageNumber!!)
+        binding.pdfView.fromFile(File(pdf?.path)).defaultPage(pageNumber!!)
             .onPageChange(this)
             .enableAnnotationRendering(true)
             .onLoad(this)

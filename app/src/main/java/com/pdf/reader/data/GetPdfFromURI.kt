@@ -2,14 +2,16 @@ package com.pdf.reader.data
 
 import android.content.Context
 import android.net.Uri
+import android.os.Build
 import android.provider.MediaStore
 import android.webkit.MimeTypeMap
 import com.pdf.reader.model.Pdf
 
-class GetPdfFromURI(private val context: Context?,private val uri: Uri?) {
+class GetPdfFromURI(private val context: Context?,private val string: String?) {
 
-    fun getPdfList(): Pdf? {
-        var pdfList: Pdf? = null
+
+    fun getPdfList(): ArrayList<Pdf> {
+        val pdfList: ArrayList<Pdf> = ArrayList()
         val projection = arrayOf(
             MediaStore.Files.FileColumns._ID,
             MediaStore.Files.FileColumns.MIME_TYPE,
@@ -20,26 +22,31 @@ class GetPdfFromURI(private val context: Context?,private val uri: Uri?) {
             MediaStore.Files.FileColumns.DATA,
             MediaStore.Files.FileColumns.SIZE
         )
+        val collection: Uri = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            MediaStore.Files.getContentUri(MediaStore.VOLUME_EXTERNAL)
+        } else {
+            MediaStore.Files.getContentUri("external")
+        }
         val mimeType: String = MimeTypeMap.getSingleton().getMimeTypeFromExtension("pdf")!!
         val selectionArgs = arrayOf(mimeType)
-
-        context?.contentResolver?.query(uri!!, projection, null, null, null)
+        val uri = Uri.parse(string)
+            context?.contentResolver?.query(uri, projection, null, null, null)
             .use { cursor ->
                 if (cursor != null) {
                     while (cursor.moveToFirst()) {
-                        val columnId = cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns._ID)
+                        val columnId = cursor.getColumnIndex(MediaStore.Files.FileColumns._ID)
                         val columnAddDate =
-                            cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.DATE_ADDED)
+                            cursor.getColumnIndex(MediaStore.Files.FileColumns.DATE_ADDED)
                         val columnModifiedDate =
-                            cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.DATE_MODIFIED)
+                            cursor.getColumnIndex(MediaStore.Files.FileColumns.DATE_MODIFIED)
                         val columnName =
-                            cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.DISPLAY_NAME)
-                        val columnTitle = cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.TITLE)
-                        val columnData = cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.DATA)
-                        val columnSize = cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.SIZE)
+                            cursor.getColumnIndex(MediaStore.Files.FileColumns.DISPLAY_NAME)
+                        val columnTitle = cursor.getColumnIndex(MediaStore.Files.FileColumns.TITLE)
+                        val columnData = cursor.getColumnIndex(MediaStore.Files.FileColumns.DATA)
+                        val columnSize = cursor.getColumnIndex(MediaStore.Files.FileColumns.SIZE)
 
-
-                         /*pdfList =   Pdf(
+                        pdfList.add(
+                            Pdf(
                                 cursor.getLong(columnId),
                                 cursor.getString(columnTitle),
                                 cursor.getString(columnData),
@@ -47,7 +54,8 @@ class GetPdfFromURI(private val context: Context?,private val uri: Uri?) {
                                 cursor.getLong(columnModifiedDate),
                                 cursor.getLong(columnSize),
                                 System.currentTimeMillis()
-                            )*/
+                            )
+                        )
 
 
                     }

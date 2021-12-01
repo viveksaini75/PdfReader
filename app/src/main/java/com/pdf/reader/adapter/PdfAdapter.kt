@@ -1,17 +1,10 @@
 package com.pdf.reader.adapter
 
 import android.app.Activity
-import android.content.Context
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.annotation.NonNull
-import androidx.appcompat.widget.PopupMenu
-import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.ListAdapter
-import androidx.recyclerview.widget.RecyclerView
-import com.pdf.reader.R
 import com.pdf.reader.activity.ViewPdfActivity
 import com.pdf.reader.dialog.DetailsDialog
 import com.pdf.reader.model.Pdf
@@ -54,8 +47,8 @@ class PdfAdapter(
                 binding?.cardLayout?.setOnClickListener {
                     ViewPdfActivity.start(activity, this)
                 }
-                binding?.popup?.setOnClickListener {
-                    activity?.showBottomSheet(this@PdfAdapter)
+                binding?.bottomSheet?.setOnClickListener {
+                    activity?.showBottomSheet(this@PdfAdapter,this,viewModel)
                 }
             }
         }

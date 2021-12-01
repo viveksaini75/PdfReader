@@ -1,34 +1,19 @@
 package com.pdf.reader.activity
 
 import android.Manifest
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.os.Parcelable
-import android.provider.MediaStore
-import android.util.Log
 import android.view.MenuItem
-import android.view.View
-import android.webkit.MimeTypeMap
-import android.widget.Toast
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.navigation.NavigationBarView
 import com.pdf.reader.R
-import com.pdf.reader.adapter.PdfAdapter
 import com.pdf.reader.databinding.ActivityMainBinding
-import com.pdf.reader.fragment.BookmarkFragment
+import com.pdf.reader.fragment.FavouriteFragment
 import com.pdf.reader.fragment.MainFragment
 import com.pdf.reader.fragment.RecentFragment
 import com.pdf.reader.fragment.SettingsFragment
-import com.pdf.reader.model.Pdf
 import com.pdf.reader.utils.loadFragment
-import com.pdf.reader.viewmodel.PdfViewModel
 
 class MainActivity : BaseActivity(), NavigationBarView.OnItemSelectedListener {
 
@@ -65,9 +50,9 @@ class MainActivity : BaseActivity(), NavigationBarView.OnItemSelectedListener {
                 binding.tool.toolBar.title = getString(R.string.recent)
 
             }
-            R.id.menu_bookmark -> {
-                BookmarkFragment().loadFragment(this, R.id.container)
-                binding.tool.toolBar.title = getString(R.string.bookmark)
+            R.id.menu_favourite -> {
+                FavouriteFragment().loadFragment(this, R.id.container)
+                binding.tool.toolBar.title = getString(R.string.favourite)
 
             }
             R.id.menu_settings -> {

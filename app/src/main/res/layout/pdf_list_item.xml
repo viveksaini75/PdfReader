@@ -39,7 +39,7 @@
                 android:orientation="vertical"
                 android:paddingStart="@dimen/dimen_10dp"
                 android:paddingEnd="@dimen/dimen_5dp"
-                android:layout_toStartOf="@+id/popup">
+                android:layout_toStartOf="@+id/bottomSheet">
 
                 <TextView
                     android:id="@+id/tvTitle"
@@ -74,7 +74,7 @@
             </LinearLayout>
 
             <ImageView
-                android:id="@+id/popup"
+                android:id="@+id/bottomSheet"
                 android:layout_width="@dimen/dimen_30dp"
                 android:layout_height="@dimen/dimen_40dp"
                 android:src="@drawable/ic_more_vert_black_24dp"

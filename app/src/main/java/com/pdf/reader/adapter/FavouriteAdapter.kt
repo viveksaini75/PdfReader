@@ -2,15 +2,9 @@ package com.pdf.reader.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.Filter
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.appcompat.widget.PopupMenu
-import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.ListAdapter
-import androidx.recyclerview.widget.RecyclerView
 import com.pdf.reader.R
 import com.pdf.reader.activity.MainActivity
 import com.pdf.reader.activity.ViewPdfActivity
@@ -21,25 +15,25 @@ import com.pdf.reader.model.Pdf
 import com.pdf.reader.utils.getFile
 import com.pdf.reader.utils.getFileSize
 import com.pdf.reader.utils.sharePdf
-import com.pdf.reader.viewholder.BookmarkViewHolder
+import com.pdf.reader.viewholder.FavouriteViewHolder
 import com.pdf.reader.viewmodel.PdfViewModel
 
 import java.util.*
 
 
-class BookmarkAdapter(
+class FavouriteAdapter(
     private val context: Context?,
     private val viewModel: PdfViewModel
 ) :
-    ListAdapter<Pdf, BookmarkViewHolder>(ListAdapterCallBack) {
+    ListAdapter<Pdf, FavouriteViewHolder>(ListAdapterCallBack) {
 
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BookmarkViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FavouriteViewHolder {
        val binding = PdfListItemBinding.inflate(LayoutInflater.from(parent.context),parent,false)
-        return BookmarkViewHolder(binding)
+        return FavouriteViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: BookmarkViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: FavouriteViewHolder, position: Int) {
         val pdfList = getItem(position)
 
         with(holder){
@@ -51,7 +45,7 @@ class BookmarkAdapter(
                 binding?.cardLayout?.setOnClickListener {
                     ViewPdfActivity.start(context, this)
                 }
-                binding?.popup?.setOnClickListener {
+                binding?.bottomSheet?.setOnClickListener {
                     val popupMenu = PopupMenu(
                         context!!, it
                     )

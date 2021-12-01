@@ -8,25 +8,23 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.pdf.reader.R
-import com.pdf.reader.adapter.BookmarkAdapter
-import com.pdf.reader.adapter.RecentAdapter
-import com.pdf.reader.databinding.FragmentBookmarkBinding
+import com.pdf.reader.adapter.FavouriteAdapter
+import com.pdf.reader.databinding.FragmentFavouriteBinding
 import com.pdf.reader.viewmodel.PdfViewModel
 
 
-class BookmarkFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
+class FavouriteFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
     private val viewModel by lazy {
         ViewModelProvider(this)[PdfViewModel::class.java]
     }
-    private lateinit var binding: FragmentBookmarkBinding
+    private lateinit var binding: FragmentFavouriteBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentBookmarkBinding.inflate(inflater, container, false)
+        binding = FragmentFavouriteBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -41,8 +39,8 @@ class BookmarkFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
     private fun getData() {
 
-        val adapter = BookmarkAdapter(requireContext(),viewModel)
-        viewModel.getBookmark()?.observe(this) {
+        val adapter = FavouriteAdapter(requireContext(),viewModel)
+        viewModel.getFavourite()?.observe(this) {
             if (it?.isEmpty()!!){
                 binding.recyclerView?.visibility = View.GONE
                 binding.messageLayout?.visibility = View.VISIBLE

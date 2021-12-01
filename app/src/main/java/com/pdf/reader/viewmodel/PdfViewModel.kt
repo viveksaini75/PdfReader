@@ -4,7 +4,6 @@ import android.app.Application
 import android.net.Uri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.pdf.reader.data.GetAllPdf
 import com.pdf.reader.data.GetPdfFromURI
@@ -17,7 +16,7 @@ class PdfViewModel(application: Application): AndroidViewModel(application) {
     private val repository = PdfRepository(application)
 
     private val allPdf = repository.getAllPdf()
-    private val bookmark = repository.getBookmark()
+    private val favourite = repository.getFavourite()
 
 
     fun insert(pdf: Pdf?) {
@@ -44,23 +43,23 @@ class PdfViewModel(application: Application): AndroidViewModel(application) {
         return allPdf!!
     }
 
-    fun getBookmark(): LiveData<List<Pdf>>? {
-        return bookmark!!
+    fun getFavourite(): LiveData<List<Pdf>>? {
+        return favourite!!
     }
 
     fun getAllPdf(): LiveData<List<Pdf>> {
         return GetAllPdf(getApplication()).getPdfList()
     }
 
-    fun isBookmark(id: Long?): Boolean {
-        return repository.isBookmark(id!!)
+    fun isFavourite(id: Long?): Boolean {
+        return repository.isFavourite(id!!)
     }
 
     fun rememberPage(id: Long?): Int{
         return repository.rememberPage(id)
     }
 
-    fun getPdfFromUri(uri: Uri?): Pdf? {
-        return GetPdfFromURI(getApplication(),uri).getPdfList()
+    fun getPdfFromUri(string: String?): ArrayList<Pdf> {
+        return GetPdfFromURI(getApplication(),string).getPdfList()
     }
 }

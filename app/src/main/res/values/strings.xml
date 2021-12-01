@@ -5,7 +5,7 @@
     <string name="no_pdf_available">No pdf available</string>
     <string name="swipe_vertical">Vertical</string>
     <string name="light_mode">Light mode</string>
-    <string name="bookmark">Bookmark</string>
+    <string name="favourite">Favourite</string>
     <string name="cancel">Cancel</string>
     <string name="jump_page_title">Jump page</string>
     <string name="go">Go</string>
@@ -21,7 +21,7 @@
     <string name="turn_on_permission">3. Turn on Storage</string>
     <string name="open_setting">Open Settings</string>
     <string name="allow">Allow</string>
-    <string name="no_bookmark_available">No bookmark available</string>
+    <string name="no_favourite_available">No favourite available</string>
     <string name="night_mode">Night mode</string>
     <string name="swipe_horizontal">Horizontal</string>
     <string name="print">Print</string>
@@ -49,5 +49,6 @@
     <string name="more">More</string>
     <string name="remember_page">Remember page</string>
     <string name="remember_page_summery">Get back where you left reading</string>
+    <string name="un_favourite">UnFavourite</string>
 
 </resources>

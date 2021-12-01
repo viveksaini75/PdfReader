@@ -3,7 +3,11 @@ package com.pdf.reader.activity
 import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
+import android.graphics.pdf.PdfRenderer
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.os.ParcelFileDescriptor
 import android.print.PrintAttributes
 import android.print.PrintManager
 import android.util.Log
@@ -11,6 +15,8 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
+import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModelProvider
 import com.github.barteksc.pdfviewer.listener.OnLoadCompleteListener
 import com.github.barteksc.pdfviewer.listener.OnPageChangeListener
@@ -30,6 +36,9 @@ import com.pdf.reader.utils.sharePdf
 import com.pdf.reader.viewmodel.PdfViewModel
 import com.shockwave.pdfium.PdfDocument
 import java.io.File
+import java.lang.Exception
+import java.nio.file.Files
+import java.nio.file.Paths
 
 class ViewPdfActivity : BaseActivity(), OnPageChangeListener, OnLoadCompleteListener,
     OnPageErrorListener, OnTapListener, JumpPageDialog.OnButtonClick {
@@ -72,9 +81,14 @@ class ViewPdfActivity : BaseActivity(), OnPageChangeListener, OnLoadCompleteList
         if (userPreferences.rememberPage) {
             pageNumber = viewModel.rememberPage(pdf.id)
         }
+        /*if (!checkIfPdfIsPasswordProtected(Uri.fromFile(File(pdf.path)))){
+            Toast.makeText(applicationContext, "protected", Toast.LENGTH_SHORT).show()
+        }else {
+            loadPdf()
+        }*/
         loadPdf()
 
-        pdf.isBookmark = viewModel.isBookmark(pdf.id)
+        pdf.isFavourite = viewModel.isFavourite(pdf.id)
         val copyPdf = Pdf(
             id = pdf.id,
             title = pdf.title,
@@ -83,7 +97,7 @@ class ViewPdfActivity : BaseActivity(), OnPageChangeListener, OnLoadCompleteList
             modifiedDate = pdf.modifiedDate,
             size = pdf.size,
             time = System.currentTimeMillis(),
-            isBookmark = pdf.isBookmark
+            isFavourite = pdf.isFavourite
         )
         viewModel.insert(copyPdf)
         changeBookmark()
@@ -100,8 +114,8 @@ class ViewPdfActivity : BaseActivity(), OnPageChangeListener, OnLoadCompleteList
         binding.jumpPageLayout.setOnClickListener {
             JumpPageDialog.newInstance(totalPage).show(supportFragmentManager, "")
         }
-        binding.bookMarkLayout.setOnClickListener {
-            pdf.isBookmark = !viewModel.isBookmark(pdf.id)
+        binding.favouriteLayout.setOnClickListener {
+            pdf.isFavourite = !viewModel.isFavourite(pdf.id)
             viewModel.insert(pdf)
             changeBookmark()
         }
@@ -109,12 +123,21 @@ class ViewPdfActivity : BaseActivity(), OnPageChangeListener, OnLoadCompleteList
 
     }
 
+    private fun checkIfPdfIsPasswordProtected(): Boolean {
+        try {
+            PdfRenderer(ParcelFileDescriptor.open(File(pdf.path), ParcelFileDescriptor.MODE_READ_ONLY))
+            return false
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return true
+        }
+    }
 
     private fun changeBookmark() {
-        if (viewModel.isBookmark(pdf.id)) {
-            binding.bookmark.setColorFilter(resources.getColor(R.color.app_default_color))
+        if (viewModel.isFavourite(pdf.id)) {
+            binding.favourite.setImageResource(R.drawable.ic_favourite_black_24dp)
         } else {
-            binding.bookmark.setColorFilter(resources.getColor(R.color.black))
+            binding.favourite.setImageResource(R.drawable.ic_favourite_border_black_24dp)
         }
     }
 
@@ -267,7 +290,7 @@ class ViewPdfActivity : BaseActivity(), OnPageChangeListener, OnLoadCompleteList
             modifiedDate = pdf.modifiedDate,
             size = pdf.size,
             time = System.currentTimeMillis(),
-            isBookmark = pdf.isBookmark,
+            isFavourite = pdf.isFavourite,
             pageNumber
         )
         viewModel.insert(copyPdf)

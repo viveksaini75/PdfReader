@@ -43,7 +43,7 @@
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/dimen_10dp"
             android:gravity="center"
-            android:text="@string/no_bookmark_available"
+            android:text="@string/no_favourite_available"
             android:textSize="16dp" />
     </LinearLayout>
 

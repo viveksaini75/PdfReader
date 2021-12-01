@@ -42,10 +42,10 @@ interface PdfDao {
     @Query("select * from pdf ORDER BY time DESC")
     fun getAllPdf(): LiveData<List<Pdf>>
 
-    @Query("SELECT * FROM pdf WHERE isBookmark = 1 ORDER BY id DESC")
+    @Query("SELECT * FROM pdf WHERE isFavourite = 1 ORDER BY id DESC")
     fun getBookmark(): LiveData<List<Pdf>>
 
-    @Query("SELECT EXISTS (SELECT * FROM pdf WHERE id=:id AND isBookmark=1)")
+    @Query("SELECT EXISTS (SELECT * FROM pdf WHERE id=:id AND isFavourite=1)")
     fun isBookmark(id: Long): Boolean
 
     @Query("select rememberPage from pdf WHERE id =:id")

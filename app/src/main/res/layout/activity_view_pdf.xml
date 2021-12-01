@@ -93,19 +93,19 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/bookMarkLayout"
+                android:id="@+id/favouriteLayout"
                 android:layout_width="@dimen/dimen_100dp"
                 android:layout_height="wrap_content"
                 android:background="?selectableItemBackground"
                 android:orientation="vertical">
 
                 <ImageView
-                    android:id="@+id/bookmark"
+                    android:id="@+id/favourite"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dimen_40dp"
                     android:layout_gravity="center"
                     android:scaleType="centerInside"
-                    android:src="@drawable/ic_bookmark_black_24dp" />
+                    android:src="@drawable/ic_favourite_border_black_24dp" />
 
                 <TextView
                     style="@style/BottomNavigationText"
@@ -113,7 +113,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:paddingBottom="@dimen/dimen_5dp"
-                    android:text="@string/bookmark"
+                    android:text="@string/favourite"
                     android:textColor="@color/black" />
 
             </LinearLayout>
