@@ -133,7 +133,7 @@ fun submitFeedback(context: Context) {
  Model (and Product): ${Build.MODEL} (${Build.PRODUCT})"""
         val emailIntent = Intent(
             Intent.ACTION_SENDTO,
-            Uri.fromParts("mailto", "piscreenrecorder.feedback@gmail.com", null)
+            Uri.fromParts("mailto", "feedback.brosdeveloper@gmial.com", null)
         )
         emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Device Info")
         emailIntent.putExtra(Intent.EXTRA_TEXT, deviceInfo)

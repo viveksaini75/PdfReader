@@ -13,7 +13,7 @@
         android:textSize="@dimen/dimen_20dp"
         android:layout_marginStart="@dimen/dimen_10dp"
         android:layout_marginTop="@dimen/dimen_5dp"
-        android:textColor="@color/black"
+        android:textColor="?textColor"
         />
 
     <EditText
@@ -24,6 +24,7 @@
         android:layout_marginTop="@dimen/dimen_20dp"
         android:layout_marginStart="@dimen/dimen_10dp"
         android:layout_marginEnd="@dimen/dimen_10dp"
+        android:textColor="?textColor"
         />
 
     <RelativeLayout
@@ -48,7 +49,7 @@
             android:id="@+id/tvCancel"
             android:layout_width="@dimen/dimen_70dp"
             android:layout_height="@dimen/dimen_50dp"
-            android:textColor="@color/black"
+            android:textColor="?textColor"
             android:text="@string/cancel"
             android:gravity="center"
             android:background="?selectableItemBackground"
