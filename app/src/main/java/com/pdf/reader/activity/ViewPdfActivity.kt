@@ -31,6 +31,7 @@ import com.pdf.reader.dialog.JumpPageDialog
 import com.pdf.reader.model.Pdf
 import com.pdf.reader.preference.UserPreferences
 import com.pdf.reader.utils.PDF_INTENT
+import com.pdf.reader.utils.getAppTheme
 import com.pdf.reader.utils.getFile
 import com.pdf.reader.utils.sharePdf
 import com.pdf.reader.viewmodel.PdfViewModel
@@ -70,6 +71,7 @@ class ViewPdfActivity : BaseActivity(), OnPageChangeListener, OnLoadCompleteList
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        setTheme(getAppTheme(applicationContext))
         super.onCreate(savedInstanceState)
         binding = ActivityViewPdfBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -257,7 +259,7 @@ class ViewPdfActivity : BaseActivity(), OnPageChangeListener, OnLoadCompleteList
                 print(pdf.path?.getFile())
             }
             R.id.menu_share -> {
-                sharePdf(applicationContext, pdf.path?.getFile())
+                sharePdf(this, pdf.path?.getFile())
             }
         }
         return super.onOptionsItemSelected(item)

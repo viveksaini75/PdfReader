@@ -1,9 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <style name="AppTheme" parent="BaseTheme.Light"/>
+    <style name="AppTheme.Dark" parent="BaseTheme.Dark"/>
+
+
+
+
+    <style name="BaseTheme.Light" parent="Theme.MaterialComponents.Light">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryVariant">@color/colorPrimary</item>
+        <item name="colorOnPrimary">@color/colorOnPrimary</item>
+        <item name="colorSecondary">@color/colorSecondary</item>
+        <item name="colorOnSecondary">@color/colorOnSecondary</item>
+        <item name="android:statusBarColor">@color/app_default_transparent</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionModeOverlay">true</item>
+        <item name="iconTint">@color/black</item>
+
+        <item name="textColor">@color/black</item>
+        <item name="navBackground">@color/white</item>
+        <item name="background">@color/white</item>
+        <item name="toolbarColor">@color/white</item>
+        <item name="divider">@color/gray12</item>
+        <item name="hintText">@color/gray</item>
+        <item name="cardBackground">@color/white</item>
+        <item name="imageTint">@color/black</item>
+        <item name="android:windowBackground">@color/white</item>
+    </style>
+
+    <style name="BaseTheme.Dark" parent="ThemeOverlay.MaterialComponents.Dark">
+        <item name="colorPrimary">@color/dark_colorPrimary</item>
+        <item name="colorPrimaryVariant">@color/dark_colorPrimary</item>
+        <item name="colorOnPrimary">@color/dark_colorOnPrimary</item>
+        <item name="colorSecondary">@color/dark_colorSecondary</item>
+        <item name="colorOnSecondary">@color/dark_colorOnSecondary</item>
+        <item name="android:statusBarColor" >@color/black</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionModeOverlay">true</item>
+        <item name="iconTint">@color/white</item>
+
+        <item name="textColor">@color/white</item>
+        <item name="navBackground">@color/black</item>
+        <item name="background">@color/black</item>
+        <item name="toolbarColor">@color/black</item>
+        <item name="divider">@color/white</item>
+        <item name="hintText">@color/white</item>
+        <item name="cardBackground">@color/dark_colorPrimary</item>
+        <item name="imageTint">@color/white</item>
+        <item name="android:windowBackground">@color/black</item>
+
+
+    </style>
 
     <style name="BottomNavigationText" parent="TextAppearance.MaterialComponents.Headline5">
         <item name="android:textSize">@dimen/dimen_12dp</item>
         <item name="android:textStyle">bold</item>
+        <item name="android:textColor">?textColor</item>
     </style>
 
     <style name="DialogAlertTheme" parent="@style/Theme.MaterialComponents.Dialog.Alert">
@@ -18,20 +73,21 @@
     </style>
 
     <style name="SettingsTextViewStyle" parent="android:Widget.TextView">
-        <item name="android:textColor">@color/black</item>
+        <item name="android:textColor">?textColor</item>
         <item name="android:gravity">center_vertical</item>
         <item name="android:layout_centerVertical">true</item>
         <item name="android:drawablePadding">20sp</item>
         <item name="android:textSize">18sp</item>
     </style>
 
+
     <style name="HintTextViewStyle">
         <item name="android:textSize">13sp</item>
-        <item name="android:textColor">@color/gray</item>
+        <item name="android:textColor">?hintText</item>
     </style>
 
     <style name="SettingsTitleTextViewStyle">
-        <item name="android:textColor">@color/black</item>
+        <item name="android:textColor">?textColor</item>
         <item name="android:textSize">16sp</item>
     </style>
 

@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.MainActivity">
+    tools:context=".activity.MainActivity"
+    >
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -28,7 +29,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/dimen_50dp"
         android:layout_alignParentBottom="true"
-        android:background="@color/white"
+        android:background="?navBackground"
         app:itemHorizontalTranslationEnabled="false"
         app:itemIconTint="@color/color_bottom_nav"
         app:itemTextAppearanceActive="@style/BottomNavigationText"

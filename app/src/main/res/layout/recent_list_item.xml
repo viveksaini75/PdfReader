@@ -11,7 +11,8 @@
     android:elevation="@dimen/dimen_8dp"
     android:focusable="true"
     android:foreground="?selectableItemBackground"
-    app:cardCornerRadius="4dp">
+    app:cardCornerRadius="4dp"
+    app:cardBackgroundColor="?cardBackground">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -46,7 +47,8 @@
                     android:layout_height="wrap_content"
                     android:gravity="left|center_vertical"
                     android:text="Qr"
-                    android:textSize="@dimen/dimen_16dp" />
+                    android:textSize="@dimen/dimen_16dp"
+                    android:textColor="?textColor"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -60,7 +62,8 @@
                         android:layout_height="wrap_content"
                         android:gravity="left|center_vertical"
                         android:text="Qr"
-                        android:textSize="12dp" />
+                        android:textSize="12dp"
+                        android:textColor="?textColor"/>
 
                     <TextView
                         android:id="@+id/tvSize"
@@ -68,7 +71,8 @@
                         android:layout_height="wrap_content"
                         android:text="1000kb"
                         android:textSize="12dp"
-                        android:layout_marginStart="@dimen/dimen_10dp"/>
+                        android:layout_marginStart="@dimen/dimen_10dp"
+                        android:textColor="?textColor"/>
                 </LinearLayout>
             </LinearLayout>
 

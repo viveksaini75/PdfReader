@@ -50,5 +50,8 @@
     <string name="remember_page">Remember page</string>
     <string name="remember_page_summery">Get back where you left reading</string>
     <string name="un_favourite">UnFavourite</string>
+    <string name="dark_mode">Dark mode</string>
+    <string name="on">On</string>
+    <string name="off">Off</string>
 
 </resources>

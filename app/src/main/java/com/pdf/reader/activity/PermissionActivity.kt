@@ -23,6 +23,7 @@ import com.pdf.reader.R
 import com.pdf.reader.databinding.ActivityMainBinding
 import com.pdf.reader.databinding.ActivityPermissionBinding
 import com.pdf.reader.preference.UserPreferences
+import com.pdf.reader.utils.getAppTheme
 
 
 class PermissionActivity : BaseActivity() {
@@ -35,6 +36,7 @@ class PermissionActivity : BaseActivity() {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        setTheme(getAppTheme(applicationContext))
         super.onCreate(savedInstanceState)
 
 

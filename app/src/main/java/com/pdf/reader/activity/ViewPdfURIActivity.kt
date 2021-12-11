@@ -28,6 +28,7 @@ import com.pdf.reader.extension.getFilePathFromURI
 import com.pdf.reader.extension.getRealPathFromUriAPI19
 import com.pdf.reader.model.Pdf
 import com.pdf.reader.preference.UserPreferences
+import com.pdf.reader.utils.getAppTheme
 import com.pdf.reader.utils.getFile
 import com.pdf.reader.utils.getPath
 import com.pdf.reader.utils.sharePdf
@@ -56,6 +57,7 @@ class ViewPdfURIActivity : BaseActivity(), OnPageChangeListener, OnLoadCompleteL
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        setTheme(getAppTheme(applicationContext))
         super.onCreate(savedInstanceState)
         binding = ActivityViewPdfBinding.inflate(layoutInflater)
         setContentView(binding.root)

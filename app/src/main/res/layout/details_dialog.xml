@@ -6,7 +6,8 @@
     android:orientation="vertical"
     android:paddingTop="15dp"
     android:paddingStart="15dp"
-    android:paddingEnd="15dp">
+    android:paddingEnd="15dp"
+    >
 
     <TextView
         android:text="@string/detail"
@@ -15,7 +16,7 @@
         android:textSize="20sp"
         android:textStyle="bold"
         android:gravity="center_vertical"
-        android:textColor="@color/black"
+        android:textColor="?textColor"
         />
 
     <LinearLayout
@@ -32,6 +33,8 @@
             android:layout_width="0dp"
             android:layout_weight="0.35"
             android:layout_gravity="center_vertical"
+            android:textColor="?textColor"
+
             />
         <TextView
             android:id="@+id/tvTitle"
@@ -40,6 +43,8 @@
             android:layout_weight="1"
             android:text="@string/title"
             android:gravity="center_vertical"
+            android:textColor="?textColor"
+
             />
     </LinearLayout>
 
@@ -56,6 +61,8 @@
             android:layout_width="0dp"
             android:layout_weight="0.35"
             android:layout_gravity="center_vertical"
+            android:textColor="?textColor"
+
             />
         <TextView
             android:id="@+id/tvDate"
@@ -64,6 +71,8 @@
             android:layout_weight="1"
             android:text="@string/date"
             android:gravity="center_vertical"
+            android:textColor="?textColor"
+
             />
     </LinearLayout>
 
@@ -80,6 +89,8 @@
             android:layout_width="0dp"
             android:layout_weight="0.35"
             android:layout_gravity="center_vertical"
+            android:textColor="?textColor"
+
             />
         <TextView
             android:id="@+id/tvSize"
@@ -88,6 +99,8 @@
             android:layout_weight="1"
             android:text="@string/size"
             android:gravity="center_vertical"
+            android:textColor="?textColor"
+
             />
     </LinearLayout>
 
@@ -103,6 +116,8 @@
             android:layout_width="0dp"
             android:layout_weight="0.35"
             android:layout_gravity="center_vertical"
+            android:textColor="?textColor"
+
             />
         <TextView
             android:id="@+id/tvPath"
@@ -111,6 +126,8 @@
             android:layout_weight="1"
             android:text="@string/path"
             android:gravity="center_vertical"
+            android:textColor="?textColor"
+
             />
     </LinearLayout>
 

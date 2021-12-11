@@ -13,6 +13,7 @@ import com.pdf.reader.fragment.FavouriteFragment
 import com.pdf.reader.fragment.MainFragment
 import com.pdf.reader.fragment.RecentFragment
 import com.pdf.reader.fragment.SettingsFragment
+import com.pdf.reader.utils.getAppTheme
 import com.pdf.reader.utils.loadFragment
 
 class MainActivity : BaseActivity(), NavigationBarView.OnItemSelectedListener {
@@ -21,6 +22,7 @@ class MainActivity : BaseActivity(), NavigationBarView.OnItemSelectedListener {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        setTheme(getAppTheme(applicationContext))
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)

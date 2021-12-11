@@ -20,7 +20,70 @@
             android:layout_marginHorizontal="@dimen/dimen_15dp"
             android:layout_marginTop="@dimen/dimen_8dp"
             android:layout_marginBottom="@dimen/dimen_5dp"
-            android:text="@string/general" />
+            android:text="@string/general"
+            />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?selectableItemBackground"
+            android:orientation="horizontal"
+            android:padding="@dimen/dimen_15dp">
+
+            <LinearLayout
+                android:id="@+id/image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:background="@drawable/background_circle"
+                android:padding="9dp"
+                android:backgroundTint="@color/orange">
+
+                <ImageView
+                    android:layout_width="@dimen/dimen_20dp"
+                    android:layout_height="@dimen/dimen_20dp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/ic_dark_mode_black_24dp" />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="@dimen/dimen_20dp"
+                android:layout_toStartOf="@+id/scDarkMode"
+                android:layout_toEndOf="@+id/image"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/SettingsTextViewStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:text="@string/dark_mode" />
+
+                <TextView
+                    android:id="@+id/tvDrakMode"
+                    style="@style/HintTextViewStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:gravity="end"
+                    android:text="@string/off" />
+
+            </LinearLayout>
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/scDarkMode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="@dimen/dimen_10dp" />
+
+
+        </RelativeLayout>
 
         <RelativeLayout
             android:id="@+id/reQuality"
@@ -208,7 +271,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/gray12" />
+            android:background="?divider" />
 
         <TextView
             style="@style/SettingsTitleTextViewStyle"
@@ -217,7 +280,8 @@
             android:layout_marginHorizontal="@dimen/dimen_15dp"
             android:layout_marginTop="@dimen/dimen_10dp"
             android:layout_marginBottom="@dimen/dimen_5dp"
-            android:text="@string/other" />
+            android:text="@string/other"
+            />
 
         <RelativeLayout
             android:id="@+id/feedbackLayout"

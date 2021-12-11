@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="?background">
 
     <TextView
         android:id="@+id/tvPermission"
@@ -13,7 +14,7 @@
         android:paddingStart="@dimen/dimen_40dp"
         android:paddingEnd="@dimen/dimen_40dp"
         android:text="@string/permission_text"
-        android:textColor="@color/black"
+        android:textColor="?textColor"
         android:textSize="16sp" />
 
     <LinearLayout
@@ -50,7 +51,7 @@
         android:layout_below="@+id/tvPermission"
         android:id="@+id/tvAllow"
         android:text="@string/allow"
-        android:textColor="@color/black"
+        android:textColor="?textColor"
         android:textAllCaps="true"
         android:layout_centerInParent="true"
         android:background="@drawable/ripple_effect"
@@ -71,7 +72,7 @@
         android:layout_centerInParent="true"
         android:background="@drawable/ripple_effect"
         android:textSize="16sp"
-        android:textColor="@color/black"
+        android:textColor="?textColor"
         android:paddingStart="@dimen/dimen_30dp"
         android:paddingEnd="@dimen/dimen_30dp"
         android:padding="@dimen/dimen_10dp"
