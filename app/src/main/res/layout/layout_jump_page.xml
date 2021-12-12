@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:padding="@dimen/dimen_10dp">
 
@@ -16,7 +17,7 @@
         android:textColor="?textColor"
         />
 
-    <EditText
+    <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/editText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -25,6 +26,10 @@
         android:layout_marginStart="@dimen/dimen_10dp"
         android:layout_marginEnd="@dimen/dimen_10dp"
         android:textColor="?textColor"
+        android:hint="@string/page_number"
+        android:textColorHint="@color/gray"
+        app:errorTextAppearance="@style/error_appearance"
+        app:errorEnabled="true"
         />
 
     <RelativeLayout
