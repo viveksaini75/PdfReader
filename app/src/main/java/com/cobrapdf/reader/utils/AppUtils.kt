@@ -18,8 +18,6 @@ import kotlin.math.roundToInt
 import android.provider.DocumentsContract
 
 
-
-
 const val PDF_INTENT = "pdf_intent"
 
 fun Fragment.loadFragment(activity: AppCompatActivity?, layoutId: Int) {
@@ -94,13 +92,15 @@ fun getPath(context: Context?, path: Uri): String? {
         MediaStore.Files.getContentUri("external")
     }
     val projection = arrayOf(MediaStore.Images.Media.DATA)
-        val cursor: Cursor? = context?.contentResolver?.query(collection, projection, null,
-            arrayOf(id), null)
-        if (cursor != null && cursor?.moveToFirst()) {
+    val cursor: Cursor? = context?.contentResolver?.query(
+        collection, projection, null,
+        arrayOf(id), null
+    )
+    if (cursor != null && cursor?.moveToFirst()) {
 
-            val columnIndex: Int? = cursor?.getColumnIndexOrThrow(projection[0])
-            filePath = cursor?.getString(columnIndex!!)
-            cursor?.close()
+        val columnIndex: Int? = cursor?.getColumnIndexOrThrow(projection[0])
+        filePath = cursor?.getString(columnIndex!!)
+        cursor?.close()
 
     }
     return filePath
@@ -133,12 +133,12 @@ fun submitFeedback(context: Context) {
  Model (and Product): ${Build.MODEL} (${Build.PRODUCT})"""
         val emailIntent = Intent(
             Intent.ACTION_SENDTO,
-            Uri.fromParts("mailto", "feedback.brosdeveloper@gmial.com", null)
+            Uri.fromParts("mailto", "feedback.brosdeveloper@gmail.com", null)
         )
         emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Device Info")
         emailIntent.putExtra(Intent.EXTRA_TEXT, deviceInfo)
         context?.startActivity(Intent.createChooser(emailIntent, "Send email..."))
-    } catch (e: java.lang.Exception) {
+    } catch (e: Exception) {
     }
 }
 
