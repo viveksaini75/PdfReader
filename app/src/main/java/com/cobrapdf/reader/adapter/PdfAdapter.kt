@@ -1,6 +1,7 @@
 package com.cobrapdf.reader.adapter
 
 import android.app.Activity
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.*
@@ -105,7 +106,7 @@ class PdfAdapter(
             }
 
             BS_SHARE_KEY->{
-                sharePdf(activity, pdfList?.path?.getFile())
+                sharePdf(activity, Uri.parse(pdfList?.uri))
             }
         }
     }

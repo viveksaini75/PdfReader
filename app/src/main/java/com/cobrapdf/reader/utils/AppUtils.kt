@@ -1,8 +1,10 @@
 package com.cobrapdf.reader.utils
 
+import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
 import android.database.Cursor
+import android.graphics.pdf.PdfRenderer
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
@@ -59,17 +61,14 @@ fun Long.getFileSize(): String {
     return modifiedFileSize
 }
 
-fun sharePdf(context: Context?, file: File?) {
+fun sharePdf(context: Context?, uri: Uri?) {
     try {
-        val fileUri = FileProvider.getUriForFile(
-            context!!, context.packageName + ".provider",
-            file!!
-        )
+
         val shareIntent = Intent()
             .setAction(Intent.ACTION_SEND)
             .setType("application/pdf")
             .setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            .putExtra(Intent.EXTRA_STREAM, fileUri)
+            .putExtra(Intent.EXTRA_STREAM, uri)
         context?.startActivity(
             Intent.createChooser(
                 shareIntent,
@@ -113,7 +112,7 @@ fun shareApp(context: Context) {
         intent.type = "text/plain"
         intent.putExtra(
             Intent.EXTRA_TEXT,
-            "Pdf reader ,Awesome app Please check out this app:\nhttps://play.google.com/store/apps/details?id=com.cobra.screenrecorder"
+            "Pdf reader ,Awesome app Please check out this app:\nhttps://play.google.com/store/apps/details?id=com.cobrapdf.reader"
         )
         context?.startActivity(Intent.createChooser(intent, "Share..."))
     } catch (e: java.lang.Exception) {
@@ -133,7 +132,7 @@ fun submitFeedback(context: Context) {
  Model (and Product): ${Build.MODEL} (${Build.PRODUCT})"""
         val emailIntent = Intent(
             Intent.ACTION_SENDTO,
-            Uri.fromParts("mailto", "feedback.brosdeveloper@gmail.com", null)
+            Uri.fromParts("mailto", "viveksainip@gmail.com", null)
         )
         emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Device Info")
         emailIntent.putExtra(Intent.EXTRA_TEXT, deviceInfo)
@@ -152,5 +151,16 @@ fun gotoGooglePlay(context: Context, packageName: String?) {
             )
         )
     } catch (e: Exception) {
+    }
+}
+
+fun checkIfPdfIsPasswordProtected(uri: Uri, contentResolver: ContentResolver): Boolean {
+    val parcelFileDescriptor = contentResolver.openFileDescriptor(uri, "r")
+        ?: return false
+    return try {
+        PdfRenderer(parcelFileDescriptor)
+        false
+    } catch (securityException: SecurityException) {
+        true
     }
 }

@@ -49,6 +49,7 @@ class GetPdfFromURI(private val context: Context?,private val string: String?) {
                             Pdf(
                                 cursor.getLong(columnId),
                                 cursor.getString(columnTitle),
+                                "",
                                 cursor.getString(columnData),
                                 cursor.getLong(columnAddDate),
                                 cursor.getLong(columnModifiedDate),

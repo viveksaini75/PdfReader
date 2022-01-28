@@ -3,9 +3,8 @@ package com.cobrapdf.reader.activity
 import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
-import android.graphics.pdf.PdfRenderer
+import android.net.Uri
 import android.os.Bundle
-import android.os.ParcelFileDescriptor
 import android.print.PrintAttributes
 import android.print.PrintManager
 import android.util.Log
@@ -14,29 +13,23 @@ import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
-import com.github.barteksc.pdfviewer.listener.OnLoadCompleteListener
-import com.github.barteksc.pdfviewer.listener.OnPageChangeListener
-import com.github.barteksc.pdfviewer.listener.OnPageErrorListener
-import com.github.barteksc.pdfviewer.listener.OnTapListener
 import com.github.barteksc.pdfviewer.scroll.DefaultScrollHandle
 import com.cobrapdf.reader.R
 import com.cobrapdf.reader.data.PrintDocumentAdapter
 import com.cobrapdf.reader.databinding.ActivityViewPdfBinding
 import com.cobrapdf.reader.dialog.DetailsDialog
 import com.cobrapdf.reader.dialog.JumpPageDialog
+import com.cobrapdf.reader.dialog.PasswordDialog
 import com.cobrapdf.reader.model.Pdf
 import com.cobrapdf.reader.preference.UserPreferences
-import com.cobrapdf.reader.utils.PDF_INTENT
-import com.cobrapdf.reader.utils.getAppTheme
-import com.cobrapdf.reader.utils.getFile
-import com.cobrapdf.reader.utils.sharePdf
+import com.cobrapdf.reader.utils.*
 import com.cobrapdf.reader.viewmodel.PdfViewModel
+import com.github.barteksc.pdfviewer.listener.*
 import com.shockwave.pdfium.PdfDocument
 import java.io.File
-import java.lang.Exception
 
 class ViewPdfActivity : BaseActivity(), OnPageChangeListener, OnLoadCompleteListener,
-    OnPageErrorListener, OnTapListener, JumpPageDialog.OnButtonClick {
+    OnPageErrorListener, OnTapListener, JumpPageDialog.OnButtonClick,PasswordDialog.OnClickListener,OnErrorListener {
 
     companion object {
         fun start(context: Context?, pdf: Pdf?) {
@@ -47,6 +40,7 @@ class ViewPdfActivity : BaseActivity(), OnPageChangeListener, OnLoadCompleteList
         }
     }
 
+    private var password: String? = null
     private var totalPage: Int = 0
     private var pageNumber: Int? = 0
     private val binding by lazy { ActivityViewPdfBinding.inflate(layoutInflater) }
@@ -58,6 +52,7 @@ class ViewPdfActivity : BaseActivity(), OnPageChangeListener, OnLoadCompleteList
         intent?.getSerializableExtra(PDF_INTENT) as? Pdf
             ?: throw IllegalArgumentException("No pdf passed")
     }
+
 
     private val userPreferences by lazy {
         UserPreferences(this)
@@ -76,17 +71,17 @@ class ViewPdfActivity : BaseActivity(), OnPageChangeListener, OnLoadCompleteList
         if (userPreferences.rememberPage) {
             pageNumber = viewModel.rememberPage(pdf.id)
         }
-        /*if (!checkIfPdfIsPasswordProtected(Uri.fromFile(File(pdf.path)))){
-            Toast.makeText(applicationContext, "protected", Toast.LENGTH_SHORT).show()
+        if (checkIfPdfIsPasswordProtected(Uri.parse(pdf.uri),contentResolver)) {
+            PasswordDialog.newInstance(this,true).show(supportFragmentManager, "")
         }else {
             loadPdf()
-        }*/
-        loadPdf()
+        }
 
         pdf.isFavourite = viewModel.isFavourite(pdf.id)
         val copyPdf = Pdf(
             id = pdf.id,
             title = pdf.title,
+            uri = pdf.uri,
             path = pdf.path,
             addDate = pdf.addDate,
             modifiedDate = pdf.modifiedDate,
@@ -118,15 +113,8 @@ class ViewPdfActivity : BaseActivity(), OnPageChangeListener, OnLoadCompleteList
 
     }
 
-    private fun checkIfPdfIsPasswordProtected(): Boolean {
-        return try {
-            PdfRenderer(ParcelFileDescriptor.open(File(pdf.path), ParcelFileDescriptor.MODE_READ_ONLY))
-            false
-        } catch (e: Exception) {
-            e.printStackTrace()
-            true
-        }
-    }
+
+
 
     private fun changeBookmark() {
         if (viewModel.isFavourite(pdf.id)) {
@@ -138,7 +126,9 @@ class ViewPdfActivity : BaseActivity(), OnPageChangeListener, OnLoadCompleteList
 
     private fun loadPdf() {
         binding.pdfView.useBestQuality(userPreferences.quality)
-        binding.pdfView.fromFile((File(pdf.path))).defaultPage(pageNumber!!)
+        binding.pdfView.fromUri(Uri.parse(pdf.uri)).defaultPage(pageNumber!!)
+            .password(password)
+            .onError(this)
             .onPageChange(this)
             .enableAnnotationRendering(true)
             .onLoad(this)
@@ -170,7 +160,9 @@ class ViewPdfActivity : BaseActivity(), OnPageChangeListener, OnLoadCompleteList
             binding.pdfView.useBestQuality(userPreferences.quality)
             binding.tvSwipe.text = getString(R.string.swipe_horizontal)
             binding.swipeImage.setImageResource(R.drawable.ic_swipe_left_black_24dp)
-            binding.pdfView.fromFile((File(pdf.path))).defaultPage(pageNumber!!)
+            binding.pdfView.fromUri(Uri.parse(pdf.uri)).defaultPage(pageNumber!!)
+                .password(password)
+                .onError(this)
                 .onPageChange(this)
                 .enableAnnotationRendering(true)
                 .onLoad(this)
@@ -218,7 +210,7 @@ class ViewPdfActivity : BaseActivity(), OnPageChangeListener, OnLoadCompleteList
     }
 
     override fun onPageError(page: Int, t: Throwable?) {
-        Log.e("Error", "PageError", t)
+        Log.d("Error", "PageError", t)
     }
 
     override fun onTap(e: MotionEvent?): Boolean {
@@ -252,7 +244,7 @@ class ViewPdfActivity : BaseActivity(), OnPageChangeListener, OnLoadCompleteList
                 print(pdf.path?.getFile())
             }
             R.id.menu_share -> {
-                sharePdf(this, pdf.path?.getFile())
+                sharePdf(this, Uri.parse(pdf.uri))
             }
         }
         return super.onOptionsItemSelected(item)
@@ -280,6 +272,7 @@ class ViewPdfActivity : BaseActivity(), OnPageChangeListener, OnLoadCompleteList
         val copyPdf = Pdf(
             id = pdf.id,
             title = pdf.title,
+            uri = pdf.uri,
             path = pdf.path,
             addDate = pdf.addDate,
             modifiedDate = pdf.modifiedDate,
@@ -289,5 +282,21 @@ class ViewPdfActivity : BaseActivity(), OnPageChangeListener, OnLoadCompleteList
             pageNumber
         )
         viewModel.insert(copyPdf)
+    }
+
+    override fun onClickListener(password: String?) {
+        this.password = password
+        loadPdf()
+    }
+
+    override fun onCancelListener() {
+        finish()
+    }
+
+    override fun onError(t: Throwable?) {
+        if (t.toString() == "com.shockwave.pdfium.PdfPasswordException: Password required or incorrect password.") {
+            PasswordDialog.newInstance(this,false).show(supportFragmentManager, "")
+        }
+
     }
 }

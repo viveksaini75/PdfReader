@@ -46,16 +46,20 @@ class GetAllPdf(val context: Context?) {
                         val columnTitle = cursor.getColumnIndex(MediaStore.Files.FileColumns.TITLE)
                         val columnData = cursor.getColumnIndex(MediaStore.Files.FileColumns.DATA)
                         val columnSize = cursor.getColumnIndex(MediaStore.Files.FileColumns.SIZE)
+                        val uri = Uri.parse(
+                            "$collection/" + cursor.getInt(
+                            columnId))
 
                         pdfList.add(
                             Pdf(
                                 cursor.getLong(columnId),
                                 cursor.getString(columnTitle),
+                                uri.toString(),
                                 cursor.getString(columnData),
                                 cursor.getLong(columnAddDate),
                                 cursor.getLong(columnModifiedDate),
                                 cursor.getLong(columnSize),
-                                System.currentTimeMillis()
+                                System.currentTimeMillis(),
                             )
                         )
 

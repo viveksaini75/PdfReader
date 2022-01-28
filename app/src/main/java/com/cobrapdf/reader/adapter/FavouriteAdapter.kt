@@ -1,6 +1,7 @@
 package com.cobrapdf.reader.adapter
 
 import android.content.Context
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.appcompat.widget.PopupMenu
@@ -55,7 +56,7 @@ class FavouriteAdapter(
                     popupMenu.setOnMenuItemClickListener { item ->
                         when (item.itemId) {
                             R.id.menu_share -> {
-                                sharePdf(context, pdfList.path?.getFile())
+                                sharePdf(context, Uri.parse(pdfList?.uri))
                             }
 
                             R.id.menu_detail -> {

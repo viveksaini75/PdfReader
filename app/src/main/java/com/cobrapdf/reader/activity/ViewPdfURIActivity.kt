@@ -75,7 +75,7 @@ class ViewPdfURIActivity : BaseActivity(), OnPageChangeListener, OnLoadCompleteL
         val  modified = File(getFilePathFromURI(uri,applicationContext)!!).lastModified()
         val  size = File(getFilePathFromURI(uri,applicationContext)!!).length()
 
-        pdf = Pdf(null,name,path,null,modified,size,System.currentTimeMillis())
+      //  pdf = Pdf(null,name,path,null,modified,size,System.currentTimeMillis())
         loadPdf()
 
        // pdf?.isBookmark = viewModel.isBookmark(pdf?.id)
@@ -265,7 +265,7 @@ class ViewPdfURIActivity : BaseActivity(), OnPageChangeListener, OnLoadCompleteL
                 print(pdf?.path?.getFile())
             }
             R.id.menu_share -> {
-                sharePdf(applicationContext, pdf?.path?.getFile())
+                sharePdf(applicationContext, Uri.parse(pdf?.uri))
             }
         }
         return super.onOptionsItemSelected(item)
